@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
 const EditBatchForm = ({ batch, onEditBatch, onCancel }) => {
-  const [label, setLabel] = useState(batch.label);
+  const [name, setName] = useState(batch.name);
   const [description, setDescription] = useState(batch.description);
 
   useEffect(() => {
-    setLabel(batch.label);
+    setName(batch.name);
     setDescription(batch.description);
   }, [batch]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onEditBatch({ ...batch, label, description });
+    onEditBatch({ ...batch, name, description });
   };
 
   return (
@@ -24,8 +24,8 @@ const EditBatchForm = ({ batch, onEditBatch, onCancel }) => {
             <input
               style={styles.input}
               type="text"
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
             />
           </div>

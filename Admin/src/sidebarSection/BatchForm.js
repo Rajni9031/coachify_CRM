@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function BatchForm({ onAddBatch, onEditBatch, onCancel, isEditMode, batchToEdit }) {
   const [batchName, setBatchName] = useState('');
@@ -12,16 +13,24 @@ function BatchForm({ onAddBatch, onEditBatch, onCancel, isEditMode, batchToEdit 
     }
   }, [isEditMode, batchToEdit]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isEditMode) {
-      onEditBatch({ ...batchToEdit, label: batchName, description: batchDescription });
-    } else {
-      if (batchName) {
+    const newBatch = {
+      name: batchName,
+      description: batchDescription
+    };
+    try {
+      if (isEditMode) {
+        await axios.put(`http://localhost:7000/api/batch/${batchToEdit._id}`, newBatch);
+        onEditBatch({ ...batchToEdit, label: batchName, description: batchDescription });
+      } else {
+        const response = await axios.post('http://localhost:7000/api/batch', newBatch);
         onAddBatch({ href: '/BatchDetail', label: batchName, description: batchDescription });
         setBatchName('');
         setBatchDescription('');
       }
+    } catch (error) {
+      console.error('Error saving batch:', error);
     }
   };
 

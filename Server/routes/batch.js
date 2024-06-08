@@ -1,30 +1,74 @@
 const express = require('express');
+const Batch = require('../models/Batch');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
 
-// Dummy database for example purposes
-let users = {};
-
-// Middleware to verify JWT
-const verifyToken = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (!token) return res.status(403).send('A token is required for authentication');
+// Create a new batch
+router.post('/', async (req, res) => {
   try {
-    const decoded = jwt.verify(token.split(' ')[1], process.env.TOKEN_KEY);
-    req.user = decoded;
+    const { name, description } = req.body;
+    const batch = new Batch({
+      name,
+      description
+    });
+    await batch.save();
+    res.status(201).send(batch);
   } catch (err) {
-    return res.status(401).send('Invalid Token');
+    res.status(400).send(err);
   }
-  return next();
-};
+});
 
-// Add a new batch for the user
-router.post('/api/batches', verifyToken, (req, res) => {
-  const userId = req.user.id;
-  const newBatch = req.body;
-  if (!users[userId]) users[userId] = [];
-  users[userId].push(newBatch);
-  res.status(201).json({ batch: newBatch });
+// Get all batches
+router.get('/', async (req, res) => {
+  try {
+    const batches = await Batch.find();
+    res.status(200).send(batches);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+// Get a batch by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const batch = await Batch.findById(req.params.id);
+    if (!batch) {
+      return res.status(404).send('Batch not found');
+    }
+    res.status(200).send(batch);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+// Update a batch
+router.put('/:id', async (req, res) => {
+  try {
+    const { name, description } = req.body;
+    const batch = await Batch.findByIdAndUpdate(
+      req.params.id, 
+      { name, description }, 
+      { new: true, runValidators: true }
+    );
+    if (!batch) {
+      return res.status(404).send('Batch not found');
+    }
+    res.status(200).send(batch);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
+// Delete a batch
+router.delete('/:id', async (req, res) => {
+  try {
+    const batch = await Batch.findByIdAndDelete(req.params.id);
+    if (!batch) {
+      return res.status(404).send('Batch not found');
+    }
+    res.status(200).send('Batch deleted');
+  } catch (err) {
+    res.status(500).send(err);
+  }
 });
 
 module.exports = router;

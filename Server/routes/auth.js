@@ -67,7 +67,7 @@ router.post('/login', async (req, res) => {
     jwt.sign(
       payload,
       JWT_SECRET,
-      { expiresIn: '1h' }, // Token expires in 1 hour
+      { expiresIn: '7d' }, // Token expires in 1 hour
       (err, token) => {
         if (err) throw err;
         res.json({ token }); // Respond with the token
