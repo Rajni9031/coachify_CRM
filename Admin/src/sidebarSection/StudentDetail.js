@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const StudentDetail = ({ onAddStudent, onClose, studentToEdit }) => {
+const StudentDetail = ({ onAddStudent, onClose, studentToEdit, batchName }) => {
     const [student, setStudent] = useState({
         firstName: '',
         lastName: '',
@@ -9,6 +9,7 @@ const StudentDetail = ({ onAddStudent, onClose, studentToEdit }) => {
         password: '',
         startDate: '',
         endDate: '',
+        batchName: batchName || '',
     });
 
     const [errors, setErrors] = useState({});
@@ -36,6 +37,7 @@ const StudentDetail = ({ onAddStudent, onClose, studentToEdit }) => {
         if (!student.password) errors.password = 'Password is required';
         if (!student.startDate) errors.startDate = 'Start Date is required';
         if (!student.endDate) errors.endDate = 'End Date is required';
+        if (!student.batchName) errors.batchName = 'Batch Name is required';
         return errors;
     };
 
@@ -131,6 +133,18 @@ const StudentDetail = ({ onAddStudent, onClose, studentToEdit }) => {
                             onChange={handleChange}
                         />
                         {errors.endDate && <div style={styles.error}>{errors.endDate}</div>}
+                    </div>
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>Batch Name</label>
+                        <input
+                            style={styles.input}
+                            type="text"
+                            name="batchName"
+                            value={student.batchName}
+                            onChange={handleChange}
+                            readOnly={!!batchName}
+                        />
+                        {errors.batchName && <div style={styles.error}>{errors.batchName}</div>}
                     </div>
                     <div style={styles.buttonContainer}>
                         <button type="submit" style={styles.buttonPrimary}>

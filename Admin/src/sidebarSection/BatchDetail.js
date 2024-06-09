@@ -113,21 +113,13 @@ const BatchDetail = () => {
         setShowStudentDetail(false);
     };
 
-    const handleSave = (updatedStudent) => {
-        setStudents(students.map(student => student.enrollmentNo === updatedStudent.enrollmentNo ? updatedStudent : student));
-        setShowStudentDetail(false);
-    };
-
-    const handleCancel = () => {
-        setShowStudentDetail(false);
-    };
-
     const handleCloseStudentDetail = () => {
         setShowStudentDetail(false);
     };
 
     return (
         <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+            {/* Batch Details */}
             <div style={{ marginBottom: '20px' }}>
                 <div className="pagetitle" style={{ marginBottom: '20px' }}>
                     <h1>{batch.name}</h1>
@@ -146,6 +138,7 @@ const BatchDetail = () => {
                 </section>
             </div>
 
+            {/* Search and Sort Bar */}
             <div className="search-sort-bar" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <label>
@@ -171,6 +164,8 @@ const BatchDetail = () => {
                     />
                 </div>
             </div>
+
+            {/* Student Table */}
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
                 <thead>
                     <tr>
@@ -183,7 +178,7 @@ const BatchDetail = () => {
                         <th style={{ backgroundColor: '#f2f2f2', padding: '10px', textAlign: 'left', borderBottom: '2px solid #ddd', cursor: 'pointer' }} onClick={() => handleSort('enrollmentNo')}>
                             <button style={{ all: 'unset', cursor: 'pointer' }}>Enrollment No.</button>
                         </th>
-                        <th style={{ backgroundColor: '#f2f2f2', padding: '10px', textAlign: 'left', borderBottom: '2px solid #ddd', cursor: 'pointer' }} onClick={() => handleSort('emailId')}>
+                        <th style={{ backgroundColor: '#f2f2f2',padding: '10px', textAlign: 'left', borderBottom: '2px solid #ddd', cursor: 'pointer' }} onClick={() => handleSort('emailId')}>
                             <button style={{ all: 'unset', cursor: 'pointer' }}>Email ID</button>
                         </th>
                         <th style={{ backgroundColor: '#f2f2f2', padding: '10px', textAlign: 'left', borderBottom: '2px solid #ddd', cursor: 'pointer' }} onClick={() => handleSort('password')}>
@@ -222,6 +217,8 @@ const BatchDetail = () => {
                     ))}
                 </tbody>
             </table>
+
+            {/* Pagination */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0' }}>
                 <div style={{ fontSize: '14px' }}>
                     Showing {indexOfFirstRow + 1} to {indexOfLastRow} of {filteredData.length} entries
@@ -264,6 +261,8 @@ const BatchDetail = () => {
                     </ul>
                 </nav>
             </div>
+
+            {/* Add Student Button */}
             <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 0' }}>
                 <button
                     style={{
@@ -279,6 +278,8 @@ const BatchDetail = () => {
                     Add Student
                 </button>
             </div>
+
+            {/* Student Detail Modal */}
             {showStudentDetail && (
                 <StudentDetail
                     onAddStudent={handleAddStudent}
@@ -291,3 +292,4 @@ const BatchDetail = () => {
 };
 
 export default BatchDetail;
+
