@@ -26,10 +26,10 @@ function BatchForm({ onAddBatch, onEditBatch, onCancel, isEditMode, batchToEdit 
     };
     try {
       if (isEditMode) {
-        await axios.put(`coachify-crm-kx1p.vercel.app/api/batches/${batchToEdit._id}`, newBatch);
+        await axios.put(`${APP}/api/batches/${batchToEdit._id}`, newBatch);
         onEditBatch({ ...batchToEdit, label: batchName, description: batchDescription, startDate: batchStartDate });
       } else {
-        const response = await axios.post(`coachify-crm-kx1p.vercel.app/api/batches`, newBatch);
+        const response = await axios.post(`${APP}/api/batches`, newBatch);
         onAddBatch({ href: '/BatchDetail', label: batchName, description: batchDescription, startDate: batchStartDate });
         setBatchName('');
         setBatchDescription('');
