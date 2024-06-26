@@ -5,7 +5,7 @@ import logo from '../img/coachifylogo.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const AP = process.env.REACT_APP_API_URL;
+const APP = process.env.REACT_APP_API_URL;
 
 const StudentLogin = () => {
   const [formData, setFormData] = useState({
@@ -27,7 +27,7 @@ const StudentLogin = () => {
   const { username, password } = formData;
 
   try {
-    const response = await axios.post(`coachify-crm-kx1p.vercel.app/api/auth/student_login`, { username, password });
+    const response = await axios.post(`${APP}/api/auth/student_login`, { username, password });
     console.log('Login response:', response.data);
     localStorage.setItem('token', response.data.token);
 
