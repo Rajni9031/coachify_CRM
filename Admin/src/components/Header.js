@@ -41,7 +41,7 @@ function Header({ title, showNotifications }) {
       }
 
       try {
-        const response = await axios.get(`coachify-crm-kx1p.vercel.app/api/profile/${username}`, {
+        const response = await axios.get(`${APP}/api/profile/${username}`, {
           headers: {
             'Authorization': `Bearer ${token}` // Assuming you store the token in localStorage
           },
