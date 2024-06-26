@@ -147,7 +147,7 @@ function SideScroll({ showbar, schedule }) {
         const day = String(localDate.getDate()).padStart(2, '0');
         const formattedDate = `${year}-${month}-${day}`;
   
-        const response = await axios.put(`${APP}/api/batches/${batchId}/schedule/${formattedDate}/${classId}`, payload);
+        const response = await axios.put(`${APP}/api/batches/${batchId}/schedule/${clickedDate}/${classId}`, payload);
         console.log('Note edited:', response.data);
   
         // Update the notes array with the edited note
