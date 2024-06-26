@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import BatchForm from '../sidebarSection/BatchForm';
 import EditBatchForm from '../sidebarSection/EditBatchForm';
 
@@ -22,16 +21,6 @@ const initialNavItems = [
     id: 'components-nav',
     children: [],
   },
-  {
-    type: 'heading',
-    label: 'Pages',
-  },
-  {
-    type: 'item',
-    icon: 'bi bi-person',
-    label: 'Profile',
-    to: '/ProfilePage',
-  },
 ];
 
 function Sidebar() {
@@ -39,6 +28,7 @@ function Sidebar() {
   const [showForm, setShowForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [batchToEdit, setBatchToEdit] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     fetchBatches();
@@ -66,7 +56,6 @@ function Sidebar() {
 
   const addBatch = async (newBatch) => {
     try {
-      // Make an asynchronous request to fetch the ID from MongoDB
       const response = await fetch(`${APP}/api/getObjectId`, {
         method: 'POST',
         headers: {
@@ -74,7 +63,6 @@ function Sidebar() {
         },
         body: JSON.stringify(newBatch),
       });
-      window.location.reload(false);
 
       if (!response.ok) {
         throw new Error('Failed to fetch object ID');
@@ -83,7 +71,6 @@ function Sidebar() {
       const data = await response.json();
       const objectId = data._id;
 
-      // Update the state with the new batch and fetched object ID
       setNavItems((prevNavItems) => {
         const updatedNavItems = [...prevNavItems];
         updatedNavItems[1].children.push({
@@ -113,7 +100,6 @@ function Sidebar() {
           ...updatedBatch,
           href: `/BatchDetail/${updatedBatch._id}`,
         };
-        window.location.reload(false);
         return updatedNavItems;
       });
       setShowEditForm(false);
@@ -151,6 +137,10 @@ function Sidebar() {
     setShowEditForm(false);
   };
 
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
   return (
     <aside id="sidebar" className="sidebar">
       <ul className="sidebar-nav" id="sidebar-nav">
@@ -176,18 +166,16 @@ function Sidebar() {
               <li className="nav-item" key={index}>
                 <a
                   className="nav-link collapsed"
-                  data-bs-toggle="collapse"
-                  href={`#${item.id}`}
+                  onClick={toggleDropdown}
                   role="button"
-                  aria-expanded="false"
+                  aria-expanded={isDropdownOpen}
                   aria-controls={item.id}
-                  onClick={fetchBatches}
                 >
                   <i className={item.icon}></i>
                   <span>{item.label}</span>
-                  <i className="bi bi-chevron-down ms-auto"></i>
+                  <i className={`bi bi-chevron-${isDropdownOpen ? 'up' : 'down'} ms-auto`}></i>
                 </a>
-                <ul id={item.id} className="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <ul id={item.id} className={`nav-content ${isDropdownOpen ? 'show' : 'collapse'}`} data-bs-parent="#sidebar-nav">
                   {item.children.map((child, childIndex) => (
                     <li key={childIndex} className="d-flex justify-content-between align-items-center">
                       <Link to={`/BatchDetail/${child._id}`}>

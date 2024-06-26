@@ -44,6 +44,11 @@ const BatchDetail = () => {
         fetchStudents();
     }, [batchId]);
 
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
     const handleSearch = (e) => {
         setSearch(e.target.value);
     };
@@ -160,7 +165,7 @@ const BatchDetail = () => {
                         <div className="col-lg-12">
                             <div className="card">
                                 <div className="card-body">
-                                    <h5 className="card-title">Batch starts from {batch.startDate}</h5>
+                                    <h5 className="card-title">Batch starts from {formatDate(batch.startDate)}</h5>
                                     <p>{batch.description}</p>
                                 </div>
                             </div>
@@ -230,8 +235,8 @@ const BatchDetail = () => {
                             <td style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>{student.lastName}</td>
                             <td style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>{student.enrollmentNo}</td>
                             <td style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>{student.emailId}</td>
-                            <td style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>{student.startDate}</td>
-                            <td style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>{student.endDate}</td>
+                            <td style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>{formatDate(student.startDate)}</td>
+                            <td style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>{formatDate(student.endDate)}</td>
                             <td style={{ padding: '10px', borderBottom: '1px solid #ddd', display: 'flex', justifyContent: 'space-around' }}>
                                 <button onClick={() => handleEditStudent(student)} style={{ all: 'unset', cursor: 'pointer', color: '#007bff' }}>
                                     <FaEdit />
