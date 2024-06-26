@@ -42,7 +42,7 @@ const Scheduler = () => {
 
   const fetchScheduleData = async (date) => {
     try {
-      const response = await axios.get(`${AP}/api/schedule/${date}`);
+      const response = await axios.get(`${APP}/api/schedule/${date}`);
       setScheduleData(response.data);
     } catch (error) {
       console.error('Failed to fetch schedule:', error);
