@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useUser } from '../ContextApi/UserContext'; // Adjust the import path as needed
 
-const AP = process.env.REACT_APP_API_URL;
+const APP = process.env.REACT_APP_API_URL;
 
 function Login({ hideCreateAccountButton = false }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -37,13 +37,13 @@ function Login({ hideCreateAccountButton = false }) {
     try {
       let response;
       if (isLogin) {
-        response = await axios.post(`coachify-crm-kx1p.vercel.app/api/auth/login`, { username, password });
+        response = await axios.post(`${APP}/api/auth/login`, { username, password });
         console.log('Login response:', response.data);
         localStorage.setItem('token', response.data.token);
         // Set the user context with the retrieved user data
         setUser({ username: response.data.username, email: response.data.email });
       } else {
-        response = await axios.post(`coachify-crm-kx1p.vercel.app/api/auth/register`, { name, email, username, password });
+        response = await axios.post(`${APP}/api/auth/register`, { name, email, username, password });
         console.log('Registration response:', response.data);
         localStorage.setItem('token', response.data.token);
         // Set the user context with the retrieved user data
