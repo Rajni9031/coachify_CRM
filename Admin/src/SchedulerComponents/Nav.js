@@ -20,7 +20,7 @@ function Nav({ panelType, studentName }) {
 
     const fetchBatchDetails = async () => {
       try {
-        const response = await axios.get(`coachify-crm-kx1p.vercel.app/api/batches/${batchId}`);
+        const response = await axios.get(`${APP}/api/batches/${batchId}`);
         console.log(response.data);
         setBatch(response.data);
       } catch (error) {
