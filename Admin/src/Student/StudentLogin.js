@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../style.css';
 import logo from '../img/coachifylogo.png';
@@ -12,8 +12,24 @@ const StudentLogin = () => {
     username: '',
     password: ''
   });
+  const [studentData, setStudentData] = useState({
+    firstName: '',
+    lastName: '',
+    enrollmentNo: '',
+    emailId: '',
+    startDate: '',
+    endDate: '',
+    batchId: '',
+  });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (studentData.batchId) {
+      const encodedUsername = encodeURIComponent(formData.username);
+      navigate(`/${encodedUsername}/${studentData.batchId}`);
+    }
+  }, [studentData, navigate, formData.username]);
 
   const handleChange = (e) => {
     setFormData({
@@ -23,23 +39,23 @@ const StudentLogin = () => {
   };
 
   const handleSubmit = async (event) => {
-  event.preventDefault();
-  const { username, password } = formData;
+    event.preventDefault();
+    const { username, password } = formData;
 
-  try {
-    const response = await axios.post(`${APP}/api/auth/student_login`, { username, password });
-    console.log('Login response:', response.data);
-    localStorage.setItem('token', response.data.token);
+    try {
+      const response = await axios.post(`${APP}/api/auth/student_login`, { username, password });
+      console.log('Login response:', response.data);
+      localStorage.setItem('token', response.data.token);
 
-    // Encode username for URL navigation
-    const encodedUsername = encodeURIComponent(username);
-    console.log(encodedUsername)
-    navigate(`/${encodedUsername}`); // Ensure the route is correctly specified
-  } catch (error) {
-    console.error('Error response:', error.response); // Log the error response
-    setError(error.response?.data.message || 'Server error');
-  }
-};
+      const studentResponse = await axios.get(`${APP}/api/student/username/${username}`);
+      console.log('Fetched student data:', studentResponse.data); // Debug log
+      setStudentData(studentResponse.data);
+
+    } catch (error) {
+      console.error('Error response:', error.response); // Log the error response
+      setError(error.response?.data.message || 'Server error');
+    }
+  };
 
   return (
     <div className="container">

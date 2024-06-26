@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import '../style.css';
 import axios from 'axios';
@@ -6,31 +6,29 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import logo from '../img/coachifylogo.png';
 import { useUser } from '../ContextApi/UserContext';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 const APP = process.env.REACT_APP_API_URL;
 
 function Header({ title, showNotifications }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const { user, setUser } = useUser();
   const { username } = useParams();
+  const dropdownRef = useRef(null);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  // Dropdown data
-  const notificationDropdownData = [
-    { id: 1, title: "Notification 1" },
-    { id: 2, title: "Notification 2" },
-    { id: 3, title: "Notification 3" }
-  ];
+  const toggleProfileDropdown = () => {
+    setProfileDropdownOpen(!profileDropdownOpen);
+  };
 
-  const messageDropdownData = [
-    { id: 1, title: "Message 1" },
-    { id: 2, title: "Message 2" },
-    { id: 3, title: "Message 3" }
-  ];
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setProfileDropdownOpen(false);
+    }
+  };
 
   useEffect(() => {
     const fetchProfileName = async () => {
@@ -43,7 +41,7 @@ function Header({ title, showNotifications }) {
       try {
         const response = await axios.get(`${APP}/api/profile/${username}`, {
           headers: {
-            'Authorization': `Bearer ${token}` // Assuming you store the token in localStorage
+            'Authorization': `Bearer ${token}`
           },
         });
 
@@ -51,12 +49,10 @@ function Header({ title, showNotifications }) {
           throw new Error('Network response was not ok');
         }
 
-        // Update the user context with the fetched profile name
         setUser((prevUser) => ({
           ...prevUser,
-          name: response.data.name, // Assuming the response has a 'name' field
+          name: response.data.name,
         }));
-        console.log(response.data.name);
       } catch (err) {
         console.error('Error fetching profile:', err);
       }
@@ -65,7 +61,19 @@ function Header({ title, showNotifications }) {
     if (!user.name) {
       fetchProfileName();
     }
-  }, [user.name, setUser]);
+  }, [user.name, setUser, username]);
+
+  useEffect(() => {
+    if (profileDropdownOpen) {
+      document.addEventListener('click', handleClickOutside);
+    } else {
+      document.removeEventListener('click', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [profileDropdownOpen]);
 
   return (
     <header id="header" className={`header fixed-top d-flex align-items-center ${sidebarOpen ? 'sidebar-open' : ''}`}>
@@ -94,38 +102,24 @@ function Header({ title, showNotifications }) {
                     <span className="badge bg-primary badge-number">4</span>
                   </a>
                   <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownNotification">
-                    {notificationDropdownData.map(item => (
+                    {/* {notificationDropdownData.map(item => (
                       <li key={item.id}><span className="dropdown-item">{item.title}</span></li>
-                    ))}
+                    ))} */}
                   </ul>
                 </li>
               )}
 
-              <li className="nav-item dropdown pe-3">
-                <a className="nav-link nav-profile dropdown-toggle d-flex align-items-center pe-0" href="#" id="navbarDropdownProfile" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <img src="assets/img/profile-img.jpg" className="rounded-circle" />
+              <li className="nav-item dropdown pe-3" ref={dropdownRef}>
+                <a className="nav-link nav-profile dropdown-toggle d-flex align-items-center pe-0" href="#" id="navbarDropdownProfile" role="button" aria-expanded={profileDropdownOpen} onClick={toggleProfileDropdown}>
                   <span className="d-none d-md-block ps-2">{user.name || 'Loading...'}</span>
                 </a>
-                <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownProfile">
+                <ul className={`dropdown-menu dropdown-menu-end ${profileDropdownOpen ? 'show' : ''}`} aria-labelledby="navbarDropdownProfile">
                   <li className="dropdown-header">
                     <h6>{user.name || 'Loading...'}</h6>
-                    <span>Web Developer</span>
                   </li>
                   <li><hr className="dropdown-divider" /></li>
                   <li>
-                    <Link className="dropdown-item d-flex align-items-center" to="/ProfilePage">
-                      <i className="bi bi-person"></i>
-                      <span>My Profile</span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item d-flex align-items-center" to="/settings">
-                      <i className="bi bi-gear"></i>
-                      <span>Settings</span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item d-flex align-items-center" to="/logout">
+                    <Link className="dropdown-item d-flex align-items-center" to="/admin">
                       <i className="bi bi-box-arrow-right"></i>
                       <span>Logout</span>
                     </Link>
