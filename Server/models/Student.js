@@ -6,7 +6,8 @@ const classSchema = new mongoose.Schema({
   topic: { type: String, required: true },
   time: { type: String, required: true },
   professor: { type: String, required: true },
-  latestClassDate: { type: Date } // Latest date of the class on which the same topic is taught
+  latestClassDate: { type: Date }, // Latest date of the class on which the same topic is taught
+  demoClass: { type: Boolean, default: false } // Add demoClass property
 });
 
 // Define the schedule schema

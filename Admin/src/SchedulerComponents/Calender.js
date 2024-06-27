@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext } from "react";
 import { DateContext } from './DateContext';
 
@@ -26,6 +25,12 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange }) 
     const endDateOfMonth = new Date(year, month + 1, 0).getDate();
     const end = new Date(year, month, endDateOfMonth).getDay();
     const today = new Date();
+
+    const joiningDateObj = new Date(joiningDate);
+    const oneWeekBeforeJoiningStart = new Date(joiningDateObj);
+    oneWeekBeforeJoiningStart.setDate(joiningDateObj.getDate() - 7);
+    const oneWeekBeforeJoiningEnd = new Date(joiningDateObj);
+    oneWeekBeforeJoiningEnd.setDate(joiningDateObj.getDate() - 1);
 
     let datesHtml = [];
 
@@ -76,11 +81,13 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange }) 
         month === today.getMonth() &&
         year === today.getFullYear();
 
+      const isOneWeekBeforeJoining =
+        currentDate >= oneWeekBeforeJoiningStart && currentDate <= oneWeekBeforeJoiningEnd;
+
       datesHtml.push(
         <li
           key={`current-${i}`}
           style={{
-            color: isSelected ? "#000" : isToday ? "#fff" : "inherit",
             width: "calc(100% / 7)",
             marginTop: "25px",
             position: "relative",
@@ -93,9 +100,10 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange }) 
             style={{
               width: "2rem",
               height: "2rem",
-              backgroundColor: isSelected ? "#fff" : "transparent",
+              backgroundColor: isSelected ? "#fff" : isOneWeekBeforeJoining ? "#ffcccc" : "transparent",
               borderRadius: isSelected ? "50%" : "none",
-              color: isSelected ? "#000" : "inherit",
+              color: isSelected ? "#000" : isToday ? "#fff" : isOneWeekBeforeJoining ? "#ff0000" : "inherit",
+              fontWeight: isOneWeekBeforeJoining ? "bold" : "normal",
               cursor: isInRange ? "pointer" : "not-allowed",
               border: "none",
               outline: "none",

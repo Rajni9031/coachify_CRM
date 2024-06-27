@@ -1,4 +1,3 @@
-
 const express = require('express');
 const Batch = require('../models/Batch');
 const Student = require('../models/Student');
@@ -133,6 +132,7 @@ router.post("/:batchId/schedule", async (req, res) => {
                 existingClass.time = newClass.time;
                 existingClass.professor = newClass.professor;
                 existingClass.latestClassDate = parsedDate;
+                existingClass.demoClass = newClass.demoClass; // Add this line
                 existingClassFound = true;
               }
             });
@@ -142,7 +142,8 @@ router.post("/:batchId/schedule", async (req, res) => {
                 topic: newClass.topic,
                 time: newClass.time,
                 professor: newClass.professor,
-                latestClassDate: parsedDate
+                latestClassDate: parsedDate,
+                demoClass: newClass.demoClass // Add this line
               });
             }
           } else {
@@ -153,7 +154,8 @@ router.post("/:batchId/schedule", async (req, res) => {
                 topic: newClass.topic,
                 time: newClass.time,
                 professor: newClass.professor,
-                latestClassDate: parsedDate
+                latestClassDate: parsedDate,
+                demoClass: newClass.demoClass // Add this line
               }]
             });
           }
@@ -165,6 +167,7 @@ router.post("/:batchId/schedule", async (req, res) => {
                 existingClass.time = newClass.time;
                 existingClass.professor = newClass.professor;
                 existingClass.latestClassDate = parsedDate;
+                existingClass.demoClass = newClass.demoClass; // Add this line
               }
             });
           });
@@ -181,6 +184,7 @@ router.post("/:batchId/schedule", async (req, res) => {
     res.status(500).send(err.message);
   }
 });
+
 
 
 // Editing the batch
@@ -311,6 +315,8 @@ router.get("/:batchId/schedule/:date", async (req, res) => {
     res.status(500).send(err);
   }
 });
+
+
 
 
 

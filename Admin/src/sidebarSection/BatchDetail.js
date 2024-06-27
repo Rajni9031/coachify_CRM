@@ -190,18 +190,7 @@ const BatchDetail = () => {
             {/* Search and Sort Bar */}
             <div className="search-sort-bar" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <label>
-                        <select
-                            style={{ marginLeft: '10px', padding: '5px' }}
-                            value={rowsPerPage}
-                            onChange={(e) => setRowsPerPage(Number(e.target.value))}
-                        >
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                            <option value="-1">All</option>
-                        </select> entries per page
-                    </label>
+                 
                 </div>
                 <div>
                     <input

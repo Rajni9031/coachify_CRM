@@ -12,6 +12,7 @@ const NotesParent = ({ notes }) => {
                         noteDate={note.time}
                         noteContent={note.professor}
                         noteClass={note.latestClassDate}
+                        demoClass={note.demoClass} // Pass demoClass property
                     />
                 ))):(<h1 style={{ textAlign: 'center', width: '100%' }}>No Schedule Yet</h1>)}
             </div>
