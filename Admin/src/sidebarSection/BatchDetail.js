@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaArrowLeft } from 'react-icons/fa';
 import StudentDetail from './StudentDetail';
 
 const APP = process.env.REACT_APP_API_URL;
@@ -139,9 +139,20 @@ const BatchDetail = () => {
 
     return (
         <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+
             {/* Batch Details */}
             <div style={{ marginBottom: '20px' }}>
                 <div className="pagetitle" style={{ marginBottom: '20px' }}>
+             <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => navigate(-1)}>
+                <FaArrowLeft
+                    style={{
+                        fontSize: '24px',
+                        color: 'black',
+                        marginRight: '5px'
+                    }}
+                />
+                <span style={{ color: 'black' }}>Back</span>
+            </div>
                     <h1>{batch.name}</h1>
                 </div>
                 <div style={{ position: 'fixed', top: '20px', right: '20px' }}>
@@ -173,6 +184,8 @@ const BatchDetail = () => {
                     </div>
                 </section>
             </div>
+
+            
 
             {/* Search and Sort Bar */}
             <div className="search-sort-bar" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>

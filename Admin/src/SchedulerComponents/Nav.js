@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { FaArrowLeft } from 'react-icons/fa';
 
 const APP = process.env.REACT_APP_API_URL;
 
@@ -14,6 +15,7 @@ function Nav({ panelType, studentName }) {
   const { batchId } = useParams();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false); // State for dropdown visibility
+  const dropdownRef = useRef(null); // Ref for dropdown menu
 
   useEffect(() => {
     const handleResize = () => {
@@ -33,6 +35,18 @@ function Nav({ panelType, studentName }) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [batchId]);
+
+  useEffect(() => {
+    // Function to close dropdown when clicking outside
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     // Implement your logout logic here (e.g., clear tokens, redirect to login page)
@@ -94,6 +108,19 @@ function Nav({ panelType, studentName }) {
 
   return (
     <div style={navbarStyle}>
+      {panelType !== 'student' && (
+        <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => navigate(-1)}>
+          <FaArrowLeft
+            style={{
+              fontSize: '24px',
+              color: 'black',
+              marginTop: '15px',
+              marginRight: '5px'
+            }}
+          />
+          <span style={{ color: 'black', marginTop: '15px', marginRight: '15px'}}>Back</span>
+        </div>
+      )}
       <div style={leftyStyle}>
         {panelType === 'student' ? (
           <div style={{ ...adminPanelStyle, backgroundColor: '#fff', color: '#000' }}>{batch.name}</div>
@@ -101,6 +128,7 @@ function Nav({ panelType, studentName }) {
           <Link to={`/BatchDetail/${batchId}`} style={{ ...adminPanelStyle, backgroundColor: '#fff', color: '#000' }}>{batch.name}</Link>
         )}
       </div>
+  
       <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
         <div style={titleStyle}>
           {panelTitle}
@@ -108,7 +136,7 @@ function Nav({ panelType, studentName }) {
       </div>
       <div style={rightyStyle}>
         {panelType === 'student' && (
-          <div className="dropdown" style={dropdownStyle}>
+          <div className="dropdown" ref={dropdownRef} style={dropdownStyle}>
             <button 
               className="btn btn-secondary dropdown-toggle" 
               type="button" 

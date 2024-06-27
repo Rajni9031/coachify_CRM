@@ -20,6 +20,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/profile', require('./routes/profile'));
 app.use('/api/batches', require('./routes/batch'));
 app.use('/api/student', require('./routes/student'));
+app.use('/api', require('./routes/scheduleList'));
 
 app.use((req, res, next) => {
   res.status(404).send('Route not found');
