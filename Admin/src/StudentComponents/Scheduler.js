@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useContext } from 'react';
 import Nav from '../SchedulerComponents/Nav';
 import axios from 'axios';
@@ -10,7 +11,6 @@ const APP = process.env.REACT_APP_API_URL;
 
 const Scheduler = () => {
   const { username } = useParams();
-  // const [selectedDate, setSelectedDate] = useState(null);
   const [scheduleData, setScheduleData] = useState([]);
   const { batchData } = useContext(BatchContext);
   const [joinDate, setJoinDate] = useState(null); // Initialize joinDate state
@@ -28,7 +28,7 @@ const Scheduler = () => {
         console.log(response.data.startDate)
         setStudentName(response.data);
         const joining = new Date(response.data.startDate);
-         joining.setDate(joining.getDate() - 1);
+        joining.setDate(joining.getDate() - 1);
         setJoinDate(joining.toISOString()); // Set joinDate from fetched data
       } catch (error) {
         console.error('Failed to fetch student details:', error);
@@ -49,21 +49,23 @@ const Scheduler = () => {
     }
   };
 
-  // const handleDateClick = (date) => {
-  //   setSelectedDate(date);
-  //   fetchScheduleData(date);
-  // };
-
   const fullName = `${studentName.firstName} ${studentName.lastName}`;
-  const date=`${batchData.startDate}`
+  const date = `${batchData.startDate}`;
+
+  const clickableRange = joinDate
+    ? {
+        start: new Date(new Date(joinDate).setDate(new Date(joinDate).getDate() - 7)),
+        end: new Date(studentName.endDate),
+      }
+    : null;
 
   return (
     <div>
       <Nav studentName={fullName} panelType="student" />
-      <div style={{display:"flex", flexWrap:"wrap"}}>
-      <Calendar joiningDate={joinDate} batchStartDate={date}/>
+      <div style={{ display: "flex", flexWrap: "wrap" }}>
+        <Calendar joiningDate={joinDate} batchStartDate={date} clickableRange={clickableRange} />
         <Scroll showbar={false} />
-        </div>
+      </div>
     </div>
   );
 };
