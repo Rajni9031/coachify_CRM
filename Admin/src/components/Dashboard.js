@@ -83,6 +83,11 @@ const Dashboard = () => {
     backgroundColor: '#fff',
   };
 
+  const demoListItemStyle = {
+    ...listItemStyle,
+    backgroundColor: 'lightgreen', // Highlight demo classes in green
+  };
+
   const classTimeStyle = {
     fontWeight: 'bold',
   };
@@ -99,7 +104,10 @@ const Dashboard = () => {
             ) : (
               <ul style={listStyle}>
                 {batchSchedule.schedules.map((cls, id) => (
-                  <li key={id} style={listItemStyle}>
+                  <li
+                    key={id}
+                    style={cls.demoClass ? demoListItemStyle : listItemStyle} // Apply conditional styling
+                  >
                     <span style={classTimeStyle}>{cls.time}</span> - {cls.topic} (Professor: {cls.professor})
                   </li>
                 ))}
