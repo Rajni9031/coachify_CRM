@@ -116,7 +116,9 @@ function Sidebar() {
         updatedNavItems[1].children = updatedNavItems[1].children.filter(
           (batch) => batch._id !== batchId
         );
+        window.location.reload();
         return updatedNavItems;
+        
       });
     } catch (error) {
       console.error('Error deleting batch:', error);

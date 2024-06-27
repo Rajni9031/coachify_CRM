@@ -2,10 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaArrowLeft } from 'react-icons/fa';
+import { useUser } from '../ContextApi/UserContext'; // Import the useUser hook
 
 const APP = process.env.REACT_APP_API_URL;
 
 function Nav({ panelType, studentName }) {
+  const { user } = useUser(); // Extract user from the context API
+  // const studentName = user.name; // Assuming the user object has a 'name' field
   const panelTitle = panelType === 'student' ? 'Student Panel' : 'Admin Panel';
   const panelItems = panelType === 'student' 
     ? ['Home', 'Class Schedule', 'Profile'] // Example student-specific items
@@ -146,7 +149,7 @@ function Nav({ panelType, studentName }) {
             >
               {studentName}
             </button>
-            <ul className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`} aria-labelledby="dropdownMenuButton">
+            <ul style={{width: '-10px'}} className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`} aria-labelledby="dropdownMenuButton">
               <li>
                 <button className="dropdown-item" onClick={handleLogout}>Logout</button>
               </li>
@@ -154,7 +157,7 @@ function Nav({ panelType, studentName }) {
           </div>
         )}
         {panelType !== 'student' && (
-          <div style={{ ...adminPanelStyle, backgroundColor: '#4CAF50', color: '#fff' }}>{studentName}</div>
+          <div style={{ ...adminPanelStyle, backgroundColor: '#4CAF50', color: '#fff' }}>{user.name}</div> // Render user name only in admin panel
         )}
       </div>
     </div>

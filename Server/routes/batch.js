@@ -49,15 +49,23 @@ router.get('/:id', async (req, res) => {
 // Update a batch
 router.put('/:id', async (req, res) => {
   try {
-    const { name, description,startDate } = req.body;
+    let { name, description, startDate } = req.body;
+
+    // Replace spaces and slashes with underscores in the batch name
+    if (name) {
+      name = name.replace(/[\s\/]/g, '_');
+    }
+
     const batch = await Batch.findByIdAndUpdate(
-      req.params.id, 
-      { name, description,startDate }, 
+      req.params.id,
+      { name, description, startDate },
       { new: true, runValidators: true }
     );
+
     if (!batch) {
       return res.status(404).send('Batch not found');
     }
+
     res.status(200).send(batch);
   } catch (err) {
     res.status(400).send(err);

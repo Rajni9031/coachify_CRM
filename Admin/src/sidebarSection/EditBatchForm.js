@@ -11,9 +11,10 @@ const EditBatchForm = ({ batch, onEditBatch, onCancel }) => {
     setStartDate(batch.startDate);
   }, [batch]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onEditBatch({ ...batch, name, description, startDate });
+    await onEditBatch({ ...batch, name, description, startDate });
+    window.location.reload(); // Reload the page after updating
   };
 
   return (
@@ -31,7 +32,7 @@ const EditBatchForm = ({ batch, onEditBatch, onCancel }) => {
               required
             />
           </div>
-              <div style={styles.formGroup}>
+          <div style={styles.formGroup}>
             <label style={styles.label}>Start Date</label>
             <input
               style={styles.input}
@@ -51,8 +52,12 @@ const EditBatchForm = ({ batch, onEditBatch, onCancel }) => {
             ></textarea>
           </div>
           <div style={styles.buttonContainer}>
-            <button type="submit" style={styles.buttonPrimary}>Save</button>
-            <button type="button" onClick={onCancel} style={styles.buttonSecondary}>Cancel</button>
+            <button type="submit" style={styles.buttonPrimary}>
+              Save
+            </button>
+            <button type="button" onClick={onCancel} style={styles.buttonSecondary}>
+              Cancel
+            </button>
           </div>
         </form>
       </div>

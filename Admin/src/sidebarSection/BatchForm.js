@@ -28,12 +28,14 @@ function BatchForm({ onAddBatch, onEditBatch, onCancel, isEditMode, batchToEdit 
       if (isEditMode) {
         await axios.put(`${APP}/api/batches/${batchToEdit._id}`, newBatch);
         onEditBatch({ ...batchToEdit, label: batchName, description: batchDescription, startDate: batchStartDate });
+      window.location.reload();
       } else {
         const response = await axios.post(`${APP}/api/batches`, newBatch);
         onAddBatch({ href: '/BatchDetail', label: batchName, description: batchDescription, startDate: batchStartDate });
         setBatchName('');
         setBatchDescription('');
         setBatchStartDate('');
+        window.location.reload();
       }
     } catch (error) {
       console.error('Error saving batch:', error);

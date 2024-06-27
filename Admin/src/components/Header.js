@@ -16,10 +16,6 @@ function Header({ title, showNotifications }) {
   const { username } = useParams();
   const dropdownRef = useRef(null);
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
   const toggleProfileDropdown = () => {
     setProfileDropdownOpen(!profileDropdownOpen);
   };
@@ -69,7 +65,7 @@ function Header({ title, showNotifications }) {
     } else {
       document.removeEventListener('click', handleClickOutside);
     }
-    
+
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
@@ -113,7 +109,7 @@ function Header({ title, showNotifications }) {
                 <a className="nav-link nav-profile dropdown-toggle d-flex align-items-center pe-0" href="#" id="navbarDropdownProfile" role="button" aria-expanded={profileDropdownOpen} onClick={toggleProfileDropdown}>
                   <span className="d-none d-md-block ps-2">{user.name || 'Loading...'}</span>
                 </a>
-                <ul className={`dropdown-menu dropdown-menu-end ${profileDropdownOpen ? 'show' : ''}`} aria-labelledby="navbarDropdownProfile">
+                <ul style={{marginTop: '10px', left: '-30px'}} className={`dropdown-menu dropdown-menu-end ${profileDropdownOpen ? 'show' : ''}`} aria-labelledby="navbarDropdownProfile">
                   <li className="dropdown-header">
                     <h6>{user.name || 'Loading...'}</h6>
                   </li>
