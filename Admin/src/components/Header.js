@@ -78,9 +78,9 @@ function Header({ title, showNotifications }) {
   return (
     <header id="header" className={`header fixed-top d-flex align-items-center ${sidebarOpen ? 'sidebar-open' : ''}`}>
       <div className="d-flex align-items-center justify-content-between w-100">
-        <Link to="/" className="logo d-flex align-items-center">
+        <div className="logo d-flex align-items-center">
           <img src={logo} alt="Coachify Logo" className="coachify-logo" />
-        </Link>
+        </div>
         <div className="admin-panel-text">
           <span className="d-none d-lg-block" style={{ fontSize: '24px', fontWeight: 'bold' }}>
             {title}

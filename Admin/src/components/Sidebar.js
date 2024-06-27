@@ -12,7 +12,7 @@ const initialNavItems = [
     type: 'item',
     icon: 'bi bi-grid',
     label: 'Dashboard',
-    href: '/home',
+    // href: '/home',
   },
   {
     type: 'dropdown',
@@ -175,14 +175,14 @@ function Sidebar() {
                   <span>{item.label}</span>
                   <i className={`bi bi-chevron-${isDropdownOpen ? 'up' : 'down'} ms-auto`}></i>
                 </a>
-                <ul id={item.id} className={`nav-content ${isDropdownOpen ? 'show' : 'collapse'}`} data-bs-parent="#sidebar-nav">
+                <ul  style={{marginLeft: '-40px'}} id={item.id} className={`nav-content ${isDropdownOpen ? 'show' : 'collapse'}`} data-bs-parent="#sidebar-nav">
                   {item.children.map((child, childIndex) => (
                     <li key={childIndex} className="d-flex justify-content-between align-items-center">
                       <Link to={`/BatchDetail/${child._id}`}>
                         <i className="bi bi-circle"></i>
                         <span>{child.label}</span>
                       </Link>
-                      <div>
+                      <div className="btn-group">
                         <button
                           className="btn btn-link text-primary"
                           onClick={() => handleEditBatchClick(child)}
@@ -199,7 +199,7 @@ function Sidebar() {
                     </li>
                   ))}
                   <li>
-                    <button className="btn btn-link nav-link" onClick={handleAddBatchClick}>
+                    <button className="btn btn-link nav-link" onClick={handleAddBatchClick}  style={{marginLeft: '30px'}}>
                       <i className="bi bi-plus-circle"></i> Add Batch
                     </button>
                   </li>
