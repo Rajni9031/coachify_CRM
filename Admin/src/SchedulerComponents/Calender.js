@@ -1,16 +1,13 @@
+
 import React, { useState, useEffect, useContext } from "react";
 import { DateContext } from './DateContext';
 
-const Calendar = ({ onDateClick, joiningDate, batchStartDate }) => {
+const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange }) => {
   const [date, setDate] = useState(new Date());
   const [month, setMonth] = useState(date.getMonth());
   const [year, setYear] = useState(date.getFullYear());
   const [selectedDate, setSelectedDate] = useState(null);
   const { setClickedDate } = useContext(DateContext);
-
-  // const handleClick = (date) => {
-  //   onDateClick(date);
-  // };
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -21,20 +18,17 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate }) => {
     const d = new Date(date);
     const s = new Date(start);
     const e = new Date(end);
-    e.setDate(e.getDate()); // Adjust the end date to be the day before joiningDate
-
-    return d >= s && d <= e; // Check if date is between start and end
+    return d >= s && d <= e;
   };
 
   const renderCalendar = () => {
     const start = new Date(year, month, 1).getDay();
-    const endDate = new Date(year, month + 1, 0).getDate();
-    const end = new Date(year, month, endDate).getDay();
+    const endDateOfMonth = new Date(year, month + 1, 0).getDate();
+    const end = new Date(year, month, endDateOfMonth).getDay();
     const today = new Date();
 
     let datesHtml = [];
 
-    // Previous month dates
     for (let i = start; i > 0; i--) {
       const prevMonthDay = new Date(year, month, -i + 1);
       datesHtml.push(
@@ -65,8 +59,7 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate }) => {
       );
     }
 
-    // Current month dates
-    for (let i = 1; i <= endDate; i++) {
+    for (let i = 1; i <= endDateOfMonth; i++) {
       const currentDate = new Date(year, month, i);
       const isSelected =
         selectedDate &&
@@ -74,13 +67,20 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate }) => {
         selectedDate.getMonth() === month &&
         selectedDate.getFullYear() === year;
 
-      const isInRange = isDateInRange(currentDate, batchStartDate, joiningDate);
+      const isInRange = clickableRange
+        ? isDateInRange(currentDate, clickableRange.start, clickableRange.end)
+        : true;
+
+      const isToday =
+        i === today.getDate() &&
+        month === today.getMonth() &&
+        year === today.getFullYear();
 
       datesHtml.push(
         <li
           key={`current-${i}`}
           style={{
-            color: isSelected ? "#000" : "inherit",
+            color: isSelected ? "#000" : isToday ? "#fff" : "inherit",
             width: "calc(100% / 7)",
             marginTop: "25px",
             position: "relative",
@@ -89,24 +89,41 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate }) => {
         >
           <button
             onClick={() => handleDateClick(i)}
+            disabled={!isInRange}
             style={{
               width: "2rem",
               height: "2rem",
-              backgroundColor: isSelected ? "#fff" : isInRange ? "#ffcccc" : "transparent", // Red background for dates in range
+              backgroundColor: isSelected ? "#fff" : "transparent",
               borderRadius: isSelected ? "50%" : "none",
               color: isSelected ? "#000" : "inherit",
-              cursor: "pointer",
+              cursor: isInRange ? "pointer" : "not-allowed",
               border: "none",
               outline: "none",
+              position: "relative",
             }}
           >
+            {isToday && (
+              <span
+                style={{
+                  content: '""',
+                  width: "2rem",
+                  height: "2rem",
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  backgroundColor: "#000",
+                  borderRadius: "50%",
+                  zIndex: -1,
+                }}
+              ></span>
+            )}
             {i}
           </button>
         </li>
       );
     }
 
-    // Next month dates
     for (let i = 1; i < 7 - end; i++) {
       const nextMonthDay = new Date(year, month + 1, i);
       datesHtml.push(
@@ -162,7 +179,6 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate }) => {
     const clickedDate = new Date(year, month, day);
     setSelectedDate(clickedDate);
     setClickedDate(clickedDate);
-    // handleClick(clickedDate);
   };
 
   useEffect(() => {
