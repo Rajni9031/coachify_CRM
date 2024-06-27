@@ -130,9 +130,6 @@ function Login({ hideCreateAccountButton = false }) {
                             id="acceptTerms"
                             required
                           />
-                          <label className="form-check-label" htmlFor="acceptTerms">
-                            I agree and accept the <a href="#">terms and conditions</a>
-                          </label>
                           <div className="invalid-feedback">You must agree before submitting.</div>
                         </div>
                       </div>
