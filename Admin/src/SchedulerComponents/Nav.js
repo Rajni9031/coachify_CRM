@@ -149,11 +149,41 @@ function Nav({ panelType, studentName }) {
             >
               {studentName}
             </button>
-            <ul style={{width: '-10px'}} className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`} aria-labelledby="dropdownMenuButton">
-              <li>
-                <button className="dropdown-item" onClick={handleLogout}>Logout</button>
-              </li>
-            </ul>
+           <ul 
+  style={{
+    width: 'fit-content',
+    margin: '5px 0 0',
+    padding: '0',
+    listStyle: 'none',
+    backgroundColor: '#fff',
+    border: '1px solid rgba(0, 0, 0, 0.15)',
+    borderRadius: '0.25rem',
+    boxShadow: '0 0.5rem 1rem rgba(0, 0, 0, 0.175)',
+    display: dropdownOpen ? 'block' : 'none',  // Toggle visibility
+  }} 
+  aria-labelledby="dropdownMenuButton"
+>
+  <li style={{ margin: '0', padding: '0' }}>
+    <button 
+      className="dropdown-item" 
+      onClick={handleLogout} 
+      style={{
+        display: 'block',
+        width: '100%',
+        padding: '0.25rem 1.5rem',
+        fontWeight: 'normal',
+        color: '#212529',
+        backgroundColor: 'transparent',
+        border: 'none',
+        textAlign: 'left',
+        whiteSpace: 'nowrap',
+        cursor: 'pointer',
+      }}
+    >
+      Logout
+    </button>
+  </li>
+</ul>
           </div>
         )}
         {panelType !== 'student' && (

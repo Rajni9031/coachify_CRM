@@ -55,13 +55,21 @@ const Scheduler = () => {
   // };
 
   const fullName = `${studentName.firstName} ${studentName.lastName}`;
-  const date=`${batchData.startDate}`
+  const date = `${batchData.startDate}`
+  
+   const clickableRange = joinDate
+    ? {
+        start: new Date(new Date(joinDate).setDate(new Date(joinDate).getDate() - 7)),
+        end: new Date(studentName.endDate),
+      }
+    : null;
+
 
   return (
     <div>
       <Nav studentName={fullName} panelType="student" />
       <div style={{display:"flex", flexWrap:"wrap"}}>
-      <Calendar joiningDate={joinDate} batchStartDate={date} showDemoClasses={false}/>
+      <Calendar isAdmin={false} joiningDate={joinDate} batchStartDate={date} showDemoClasses={false} clickableRange={clickableRange}/>
         <Scroll showbar={false} />
         </div>
     </div>

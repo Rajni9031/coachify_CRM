@@ -8,10 +8,11 @@ import { DateContext } from './DateContext';
 const APP = process.env.REACT_APP_API_URL;
 
 function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
+  const [isVisible, setIsVisible] = useState(showbar);
   const [showMenu, setShowMenu] = useState(false);
   const { batchId } = useParams();
   const { clickedDate } = useContext(DateContext);
-  const [allNotes, setAllNotes] = useState([]);
+  const [allNotes, setAllNotes] = useState([]); // Initialize with an empty array
   const [modalType, setModalType] = useState(null);
   const [selectedNoteIndex, setSelectedNoteIndex] = useState(null);
 
@@ -36,7 +37,7 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
     const fetchNotes = async () => {
       try {
         const response = await axios.get(`${APP}/api/batches/${batchId}/schedule/${clickedDate}`);
-        setAllNotes(response.data.classes);
+        setAllNotes(response.data.classes || []); // Ensure response.data.classes is defined
       } catch (error) {
         console.error('Error fetching notes:', error);
       }
@@ -179,88 +180,78 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
   const filteredNotes = showDemoClasses ? allNotes : allNotes.filter(note => !note.demoClass);
 
   return (
-    <div style={{
-      display: 'flex',
-      flexWrap: 'wrap',
-      position: 'relative',
-      padding: '10px',
-      height: '70vh',
-      width: '45vw',
-      border: '2px solid black',
-      boxShadow: '2px 2px 5px #aaa',
-      backgroundColor: 'white',
-      overflowY: 'auto'
+    <div style={{ 
+      display: 'flex', 
+      flexWrap: 'wrap', 
+      position: 'relative', 
+      padding: '10px', 
+      height: '70vh', 
+      width: '45vw', 
+      border: '1px solid #d1d1d1', 
+      boxShadow: 'rgba(0, 0, 0, 0.2) 0px 0px 10px', 
+      fontFamily: 'GestaRegular, Arial, Helvetica, sans-serif', 
+      overflow: 'auto', 
+      marginLeft: '2vw', 
+      borderRadius: '10px', 
+      backgroundColor: '#e8efff' 
     }}>
-      <div style={{
-        position: 'fixed',
-        top: '20px',
-        right: '20px',
-        zIndex: 9999
-      }}>
-        <button
-          style={{
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            padding: '10px 20px',
-            display: 'flex',
-            alignItems: 'center'
-          }}
-          onClick={handleMenuToggle}
+      {isVisible && (
+        <div style={{ 
+          position: 'absolute', 
+          top: '10px', 
+          right: '10px', 
+          cursor: 'pointer', 
+          backgroundColor: '#fff', 
+          border: '1px solid #ccc', 
+          borderRadius: '50%', 
+          padding: '8px', 
+          boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)' 
+        }} 
+        onClick={handleMenuToggle}
         >
-          <FaPlus style={{ marginRight: '10px' }} />
-        </button>
-        {showMenu && (
-          <ul
-            ref={dropdownRef}
-            style={{
-              position: 'absolute',
-              top: '100%',
-              right: 0,
-              backgroundColor: '#aaa1a1',
-              boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-              borderRadius: '5px',
-              listStyle: 'none',
-              padding: '10px 0',
-              marginTop: '10px',
-              zIndex: 1000
-            }}
+           <FaPlus />
+        </div>
+      )}
+      {showMenu && (
+        <div ref={dropdownRef} style={{ 
+          position: 'absolute', 
+          top: '40px', 
+          right: '10px', 
+          background: '#efdddd', 
+          border: '1px solid #ccc', 
+          borderRadius: '8px', 
+          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)', 
+          zIndex: 1000 
+        }}>
+          <div style={{ 
+            padding: '10px 20px', 
+            cursor: 'pointer', 
+            transition: 'background-color 0.3s ease' 
+          }} 
+          onClick={handleEditModal}
           >
-            <li
-              onClick={handleAddModal}
-              style={{
-                padding: '10px 20px',
-                cursor: 'pointer',
-                transition: 'background-color 0.3s ease'
-              }}
-            >
-              Add Notes
-            </li>
-            <li
-              onClick={handleEditModal}
-              style={{
-                padding: '10px 20px',
-                cursor: 'pointer',
-                transition: 'background-color 0.3s ease'
-              }}
-            >
-              Edit Notes
-            </li>
-            <li
-              onClick={handleDeleteModal}
-              style={{
-                padding: '10px 20px',
-                cursor: 'pointer',
-                transition: 'background-color 0.3s ease'
-              }}
-            >
-              Delete Notes
-            </li>
-          </ul>
-        )}
-      </div>
+            Edit Note
+          </div>
+          <div style={{ 
+            padding: '10px 20px', 
+            cursor: 'pointer', 
+            transition: 'background-color 0.3s ease' 
+          }} 
+          onClick={handleAddModal}
+          >
+            Add New Note
+          </div>
+          <div style={{ 
+            padding: '10px 20px', 
+            cursor: 'pointer', 
+            transition: 'background-color 0.3s ease' 
+          }} 
+          onClick={handleDeleteModal}
+          >
+            Delete Note
+          </div>
+        </div>
+      )}
 
       <NotesParent notes={filteredNotes} />
 
@@ -341,113 +332,141 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
         </div>
       )}
 
-      {modalType === 'edit' && (
-        <div ref={modalRef} style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: '#aaa1a1',
-          padding: '20px',
-          borderRadius: '10px',
-          boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
-          zIndex: 1000
+{modalType === 'delete' && (
+        <div ref={modalRef} style={{ 
+          position: 'fixed', 
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          backgroundColor: '#aaa1a1', 
+          padding: '20px', 
+          borderRadius: '10px', 
+          boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)', 
+          zIndex: 1000 
         }}>
-          <input
-            type="text"
-            placeholder="Topic"
-            value={editedNote.topic}
-            onChange={(e) => setEditedNote({ ...editedNote, topic: e.target.value })}
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginBottom: '15px',
-              border: '1px solid #ccc',
-              borderRadius: '5px'
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Time"
-            value={editedNote.time}
-            onChange={(e) => setEditedNote({ ...editedNote, time: e.target.value })}
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginBottom: '15px',
-              border: '1px solid #ccc',
-              borderRadius: '5px'
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Professor"
-            value={editedNote.professor}
-            onChange={(e) => setEditedNote({ ...editedNote, professor: e.target.value })}
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginBottom: '15px',
-              border: '1px solid #ccc',
-              borderRadius: '5px'
-            }}
-          />
-          <button
-            onClick={handleEditNote}
-            style={{
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              padding: '10px 20px'
-            }}
-          >
-            Save Changes
-          </button>
-        </div>
-      )}
-
-      {modalType === 'delete' && (
-        <div ref={modalRef} style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: '#aaa1a1',
-          padding: '20px',
-          borderRadius: '10px',
-          boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
-          zIndex: 1000
-        }}>
-          <p style={{ marginBottom: '15px' }}>Are you sure you want to delete this note?</p>
-          <button
-            onClick={handleDeleteNote}
-            style={{
-              backgroundColor: '#dc3545',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              padding: '10px 20px',
-              marginRight: '10px'
+          <p style={{ fontWeight: 'bold' }}>Select a note to delete:</p>
+          <ul>
+            {allNotes.map((note, index) => (
+              <li 
+                style={{ 
+                  marginTop: '20px', 
+                  marginBottom: '20px', 
+                  listStyleType: 'none', 
+                  color: selectedNoteIndex === index ? 'red' : 'black', 
+                  fontSize: 'larger', 
+                  cursor: 'pointer' 
+                }} 
+                key={index} 
+                onClick={() => setSelectedNoteIndex(index)}
+              >
+                {note.topic}
+              </li>
+            ))}
+          </ul>
+          <button 
+            onClick={handleDeleteNote} 
+            style={{ 
+              padding: '10px 20px', 
+              backgroundColor: '#007bff', 
+              color: '#fff', 
+              border: 'none', 
+              borderRadius: '5px', 
+              cursor: 'pointer', 
+              transition: 'background-color 0.3s ease' 
             }}
           >
             Delete
           </button>
-          <button
-            onClick={() => setModalType(null)}
-            style={{
-              backgroundColor: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              padding: '10px 20px'
-            }}
-          >
-            Cancel
-          </button>
+        </div>
+      )}
+
+      {modalType === 'edit' && (
+        <div ref={modalRef} style={{ 
+          position: 'fixed', 
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          backgroundColor: '#aaa1a1', 
+          padding: '20px', 
+          borderRadius: '10px', 
+          boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)', 
+          zIndex: 1000 
+        }}>
+          <p style={{ fontWeight: 'bold' }}>Select a note to edit:</p>
+          <ul>
+            {allNotes.map((note, index) => (
+              <li 
+                style={{ 
+                  marginTop: '20px', 
+                  marginBottom: '20px', 
+                  listStyleType: 'none', 
+                  color: selectedNoteIndex === index ? 'blue' : 'black', 
+                  fontSize: 'larger', 
+                  cursor: 'pointer' 
+                }} 
+                key={index} 
+                onClick={() => setSelectedNoteIndex(index)}
+              >
+                {note.topic}
+              </li>
+            ))}
+          </ul>
+          {selectedNoteIndex !== null && (
+            <div>
+              <input 
+                type="text" 
+                placeholder="Topic" 
+                value={editedNote.topic} 
+                onChange={(e) => setEditedNote({ ...editedNote, topic: e.target.value })} 
+                style={{ 
+                  width: '100%', 
+                  padding: '10px', 
+                  marginBottom: '15px', 
+                  border: '1px solid #ccc', 
+                  borderRadius: '5px' 
+                }} 
+              />
+              <input 
+                type="text" 
+                placeholder="Time" 
+                value={editedNote.time} 
+                onChange={(e) => setEditedNote({ ...editedNote, time: e.target.value })} 
+                style={{ 
+                  width: '100%', 
+                  padding: '10px', 
+                  marginBottom: '15px', 
+                  border: '1px solid #ccc', 
+                  borderRadius: '5px' 
+                }} 
+              />
+              <textarea 
+                placeholder="Professor" 
+                value={editedNote.professor} 
+                onChange={(e) => setEditedNote({ ...editedNote, professor: e.target.value })} 
+                style={{ 
+                  width: '100%', 
+                  padding: '10px', 
+                  marginBottom: '15px', 
+                  border: '1px solid #ccc', 
+                  borderRadius: '5px' 
+                }} 
+              />
+              <button 
+                onClick={handleEditNote} 
+                style={{ 
+                  padding: '10px 20px', 
+                  backgroundColor: '#007bff', 
+                  color: '#fff', 
+                  border: 'none', 
+                  borderRadius: '5px', 
+                  cursor: 'pointer', 
+                  transition: 'background-color 0.3s ease' 
+                }}
+              >
+                Update
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

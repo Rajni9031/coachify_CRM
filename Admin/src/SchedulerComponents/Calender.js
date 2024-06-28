@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { DateContext } from './DateContext';
 
-const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange }) => {
+const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange, isAdmin }) => {
   const [date, setDate] = useState(new Date());
   const [month, setMonth] = useState(date.getMonth());
   const [year, setYear] = useState(date.getFullYear());
@@ -72,9 +72,11 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange }) 
         selectedDate.getMonth() === month &&
         selectedDate.getFullYear() === year;
 
-      const isInRange = clickableRange
-        ? isDateInRange(currentDate, clickableRange.start, clickableRange.end)
-        : true;
+      const isInRange = isAdmin || (
+        clickableRange
+          ? isDateInRange(currentDate, clickableRange.start || oneWeekBeforeJoiningStart, clickableRange.end || joiningDate)
+          : isDateInRange(currentDate, oneWeekBeforeJoiningStart, joiningDate)
+      );
 
       const isToday =
         i === today.getDate() &&
