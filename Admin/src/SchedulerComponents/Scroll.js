@@ -134,7 +134,6 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
         const month = String(localDate.getMonth() + 1).padStart(2, '0');
         const day = String(localDate.getDate()).padStart(2, '0');
         const formattedDate = `${year}-${month}-${day}`;
-
         const response = await axios.put(`${APP}/api/batches/${batchId}/schedule/${clickedDate}/${classId}`, payload);
         console.log('Note edited:', response.data);
 
