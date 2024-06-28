@@ -1,4 +1,3 @@
-// SideScroll.js
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import NotesParent from './Notes';
 import { useParams } from 'react-router-dom';
@@ -9,7 +8,6 @@ import { DateContext } from './DateContext';
 const APP = process.env.REACT_APP_API_URL;
 
 function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
-  // const [isVisible, setIsVisible] = useState(showbar);
   const [showMenu, setShowMenu] = useState(false);
   const { batchId } = useParams();
   const { clickedDate } = useContext(DateContext);
@@ -136,6 +134,7 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
         const month = String(localDate.getMonth() + 1).padStart(2, '0');
         const day = String(localDate.getDate()).padStart(2, '0');
         const formattedDate = `${year}-${month}-${day}`;
+
         const response = await axios.put(`${APP}/api/batches/${batchId}/schedule/${clickedDate}/${classId}`, payload);
         console.log('Note edited:', response.data);
 
@@ -316,6 +315,15 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
               borderRadius: '5px'
             }}
           />
+          <label>
+            <input
+              type="checkbox"
+              checked={newNote.demoClass}
+              onChange={(e) => setNewNote({ ...newNote, demoClass: e.target.checked })}
+              style={{ marginRight: '10px' }}
+            />
+            Demo Class
+          </label>
           <button
             onClick={handleAddNote}
             style={{
@@ -324,7 +332,8 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
               border: 'none',
               borderRadius: '5px',
               cursor: 'pointer',
-              padding: '10px 20px'
+              padding: '10px 20px',
+              marginTop: '15px'
             }}
           >
             Add Note
