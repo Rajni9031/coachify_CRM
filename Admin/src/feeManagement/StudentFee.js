@@ -11,17 +11,27 @@ const FeeManagementCalculator = () => {
     const [installments, setInstallments] = useState([]);
 
     const styles = {
+        mainBody: {
+            fontFamily: 'Segoe UI',
+            backgroundColor: '#f4f4f4',
+            // margin: '0',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+            overflowY: 'scroll',
+        },
         container: {
             backgroundColor: '#ffffff',
             padding: '20px',
             borderRadius: '15px',
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
             width: '80%',
-            justifyContent: 'center',
             height: '80%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            // justifyContent: 'center',
             overflowY: 'auto',
         },
         formSection: {
@@ -60,9 +70,6 @@ const FeeManagementCalculator = () => {
             transition: 'background-color 0.3s',
             marginTop: '20px',
         },
-        buttonHover: {
-            backgroundColor: '#0056b3',
-        },
         installmentDetails: {
             display: installmentType === 'custom' ? 'block' : 'none',
             marginTop: '20px',
@@ -80,7 +87,7 @@ const FeeManagementCalculator = () => {
             backgroundColor: '#f8f9fa',
             padding: '15px',
             borderRadius: '5px',
-            overflowY: 'auto',
+            overflowY: 'scroll',
             maxHeight: '300px',
             display: 'flex',
             flexWrap: 'wrap',
@@ -156,134 +163,138 @@ const FeeManagementCalculator = () => {
     };
 
     return (
-        <div style={styles.container}>
-            <form onSubmit={e => e.preventDefault()}>
-                <h1 style={{ textAlign: 'center', color: '#333', marginBottom: '20px', marginTop: '0' }}>
-                    Fee Management Calculator
-                </h1>
-                <div style={styles.formSection}>
-                    <div style={styles.formGroup}>
-                        <label htmlFor="totalFees" style={styles.label}>Total Fees:</label>
-                        <input
-                            type="number"
-                            id="totalFees"
-                            value={totalFees}
-                            min="0"
-                            onChange={e => setTotalFees(e.target.value)}
-                            style={styles.input}
-                        />
+        <div style={styles.mainBody}>
+            <div style={styles.container}>
+                <form onSubmit={e => e.preventDefault()}>
+                    <h1 style={{ textAlign: 'center', color: '#333', marginBottom: '40px', marginTop: '5px' }}>
+                        Fee Management Calculator
+                    </h1>
+                    <div style={styles.formSection}>
+                        <div style={styles.formGroup}>
+                            <label htmlFor="totalFees" style={styles.label}>Total Fees:</label>
+                            <input
+                                type="number"
+                                id="totalFees"
+                                value={totalFees}
+                                min="0"
+                                onChange={e => setTotalFees(e.target.value)}
+                                style={styles.input}
+                            />
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label htmlFor="registrationFee" style={styles.label}>Registration Fee:</label>
+                            <input
+                                type="number"
+                                id="registrationFee"
+                                value={registrationFee}
+                                min="0"
+                                onChange={e => setRegistrationFee(e.target.value)}
+                                style={styles.input}
+                            />
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label htmlFor="discount" style={styles.label}>Scholarship Discount (%):</label>
+                            <input
+                                type="number"
+                                id="discount"
+                                value={discount}
+                                min="0"
+                                max="100"
+                                onChange={e => setDiscount(e.target.value)}
+                                style={styles.input}
+                            />
+                        </div>
                     </div>
-                    <div style={styles.formGroup}>
-                        <label htmlFor="registrationFee" style={styles.label}>Registration Fee:</label>
-                        <input
-                            type="number"
-                            id="registrationFee"
-                            value={registrationFee}
-                            min="0"
-                            onChange={e => setRegistrationFee(e.target.value)}
-                            style={styles.input}
-                        />
-                    </div>
-                    <div style={styles.formGroup}>
-                        <label htmlFor="discount" style={styles.label}>Scholarship Discount (%):</label>
-                        <input
-                            type="number"
-                            id="discount"
-                            value={discount}
-                            min="0"
-                            max="100"
-                            onChange={e => setDiscount(e.target.value)}
-                            style={styles.input}
-                        />
-                    </div>
-                </div>
 
-                <div style={styles.formSection}>
-                    <div style={styles.formGroup}>
-                        <label htmlFor="batchStartDate" style={styles.label}>Batch Start Date:</label>
-                        <input
-                            type="date"
-                            id="batchStartDate"
-                            value={batchStartDate}
-                            onChange={e => setBatchStartDate(e.target.value)}
-                            style={styles.input}
-                        />
+                    <div style={styles.formSection}>
+                        <div style={styles.formGroup}>
+                            <label htmlFor="batchStartDate" style={styles.label}>Batch Start Date:</label>
+                            <input
+                                type="date"
+                                id="batchStartDate"
+                                value={batchStartDate}
+                                onChange={e => setBatchStartDate(e.target.value)}
+                                style={styles.input}
+                            />
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label htmlFor="finalAmount" style={styles.label}>Amount After Discount:</label>
+                            <input
+                                type="text"
+                                id="finalAmount"
+                                value={finalAmount}
+                                readOnly
+                                style={styles.input}
+                            />
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label htmlFor="installmentType" style={styles.label}>Installment Type:</label>
+                            <select
+                                id="installmentType"
+                                value={installmentType}
+                                onChange={e => setInstallmentType(e.target.value)}
+                                style={styles.input}
+                            >
+                                <option value="default">Default (3 Installments)</option>
+                                <option value="custom">Custom (3 to 5 Installments)</option>
+                            </select>
+                        </div>
                     </div>
-                    <div style={styles.formGroup}>
-                        <label htmlFor="finalAmount" style={styles.label}>Final Amount After Discount:</label>
-                        <input
-                            type="text"
-                            id="finalAmount"
-                            value={finalAmount}
-                            readOnly
-                            style={styles.input}
-                        />
-                    </div>
-                    <div style={styles.formGroup}>
-                        <label htmlFor="installmentType" style={styles.label}>Installment Type:</label>
-                        <select
-                            id="installmentType"
-                            value={installmentType}
-                            onChange={e => setInstallmentType(e.target.value)}
-                            style={styles.input}
-                        >
-                            <option value="default">Default (3 Installments)</option>
-                            <option value="custom">Custom (3 to 5 Installments)</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div style={styles.installmentDetails}>
-                    <label htmlFor="numInstallments" style={styles.label}>Number of Installments (3 to 5):</label>
-                    <input
-                        type="number"
-                        id="numInstallments"
-                        min="3"
-                        max="5"
-                        value={numInstallments}
-                        onChange={e => setNumInstallments(e.target.value)}
-                        style={styles.input}
-                    />
-                    <div id="installmentInputs">
-                        {[...Array(numInstallments)].map((_, i) => (
-                            <div key={i} style={styles.installmentRow}>
-                                <input
-                                    type="number"
-                                    placeholder={`Percent for Installment ${i + 1}`}
-                                    min="0"
-                                    max="100"
-                                    id={`percent${i}`}
-                                    style={styles.installmentRowInput}
-                                    required
-                                />
-                                <input
-                                    type="number"
-                                    placeholder="Months after previous"
-                                    min="0"
-                                    id={`months${i}`}
-                                    style={styles.installmentRowInput}
-                                    required
-                                />
+                    {installmentType === 'custom' && (
+                        <div style={styles.installmentDetails}>
+                            <label htmlFor="numInstallments" style={styles.label}>Number of Installments (3 to 5):</label>
+                            <input
+                                type="number"
+                                id="numInstallments"
+                                min="3"
+                                max="5"
+                                value={numInstallments}
+                                onChange={e => setNumInstallments(Number(e.target.value))}
+                                style={styles.input}
+                            />
+                            <div id="installmentInputs">
+                                {[...Array(numInstallments)].map((_, i) => (
+                                    <div key={i} style={styles.installmentRow}>
+                                        <input
+                                            type="number"
+                                            placeholder={`Percent for Installment ${i + 1}`}
+                                            min="0"
+                                            max="100"
+                                            id={`percent${i}`}
+                                            style={styles.installmentRowInput}
+                                            required
+                                        />
+                                        <input
+                                            type="number"
+                                            placeholder="Months after previous"
+                                            min="0"
+                                            id={`months${i}`}
+                                            style={styles.installmentRowInput}
+                                            required
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    <div id="installments" style={styles.result}>
+                        {installments.map((installment, index) => (
+                            <div key={index} style={styles.installment}>
+                                <p>
+                                    <strong>Installment {index + 1}:</strong> {installment.amount}<br />
+                                    <strong>Due Date:</strong> {installment.dueDate}
+                                </p>
                             </div>
                         ))}
                     </div>
-                </div>
 
-                <div id="installments" style={styles.result}>
-                    {installments.map((installment, index) => (
-                        <div key={index} style={styles.installment}>
-                            <p>
-                                <strong>Installment {index + 1}:</strong> {installment.amount}<br />
-                                <strong>Due Date:</strong> {installment.dueDate}
-                            </p>
-                        </div>
-                    ))}
-                </div>
-
-                <button type="button" onClick={handleCalculate} style={styles.button}>
-                    Calculate
-                </button>
-            </form>
+                    <button type="button" onClick={handleCalculate} style={styles.button}>
+                        Calculate
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

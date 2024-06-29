@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
     }
 
     const batchName = batchDetails.name;
-    const username = `${firstName}_${batchName}`;
+    const username = `${firstName}_${batchName}_${enrollmentNo}`;
     const password = `${firstName}_${enrollmentNo}`;
 
     // Create a new student

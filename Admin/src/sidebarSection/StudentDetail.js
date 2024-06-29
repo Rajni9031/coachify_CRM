@@ -29,29 +29,31 @@ const StudentDetail = ({ onAddStudent, onClose, studentToEdit, batchId }) => {
         }));
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        try {
-            if (studentToEdit) {
-                // Edit student
-                await axios.put(`${APP}/api/student/${studentToEdit._id}`, student);
-                setStudent(prevStudents => prevStudents.map(s => s._id === studentToEdit._id ? student : s));
-                window.location.reload();
-            } else {
-                // Add new student
-                const response = await axios.post(`${APP}/api/student`, student);
-                onAddStudent(response.data);
-                console.log(response.data);
-                window.location.reload(false);
-            }
-
-            // Close the form
-            onClose();
-        } catch (error) {
-            console.error('Error submitting form:', error);
+    try {
+        console.log('Submitting student data:', student);
+        if (studentToEdit) {
+            // Edit student
+            await axios.put(`${APP}/api/student/${studentToEdit._id}`, student);
+            console.log('Student updated successfully!');
+            // Additional logic
+        } else {
+            // Add new student
+            const response = await axios.post(`${APP}/api/student`, student);
+            console.log('Student added successfully:', response.data);
+            onAddStudent(response.data);
+            // Additional logic
         }
-    };
+
+        // Close the form
+        onClose();
+    } catch (error) {
+        console.error('Error submitting form:', error);
+        // Handle specific errors or log more details
+    }
+};
 
     return (
         <div className="student-detail-modal" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
