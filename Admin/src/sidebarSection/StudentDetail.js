@@ -10,6 +10,7 @@ const StudentDetail = ({ onAddStudent, onClose, studentToEdit, batchId }) => {
         enrollmentNo: '',
         emailId: '',
         // password: '',
+        batchstartDate: '',
         startDate: '',
         endDate: '',
         batchId: batchId || '', // Set batchId from prop
@@ -42,6 +43,7 @@ const StudentDetail = ({ onAddStudent, onClose, studentToEdit, batchId }) => {
                 // Add new student
                 const response = await axios.post(`${APP}/api/student`, student);
                 onAddStudent(response.data);
+                console.log(response.data)
                 window.location.reload(false);
             }
 
@@ -78,6 +80,10 @@ const StudentDetail = ({ onAddStudent, onClose, studentToEdit, batchId }) => {
                         <label>Password:</label>
                         <input type="password" name="password" value={student.password} onChange={handleChange} style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }} />
                     </div> */}
+                    <div style={{ marginBottom: '10px' }}>
+                        <label>Batch Start Date:</label>
+                        <input type="date" name="startDate" value={student.batchstartDate} onChange={handleChange} style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }} />
+                    </div>
                     <div style={{ marginBottom: '10px' }}>
                         <label>Start Date:</label>
                         <input type="date" name="startDate" value={student.startDate} onChange={handleChange} style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }} />
