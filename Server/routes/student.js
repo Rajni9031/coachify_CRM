@@ -11,7 +11,7 @@ dotenv.config();
 // Create a new student
 router.post('/', async (req, res) => {
   try {
-    const { firstName, lastName, enrollmentNo, emailId, startDate, endDate, batchId } = req.body;
+    const { firstName, lastName, enrollmentNo, emailId, batchstartDate, startDate, endDate, batchId } = req.body;
 
     // Fetch the batch details to generate the username
     const batchDetails = await Batch.findById(batchId).exec();
@@ -31,6 +31,7 @@ router.post('/', async (req, res) => {
       emailId,
       username,
       password, // Store plain text password to be hashed by mongoose pre-save hook
+      batchstartDate: new Date(batchstartDate),
       startDate: new Date(startDate),
       endDate: new Date(endDate),
       batchId
@@ -182,7 +183,7 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    const { firstName, lastName, enrollmentNo, emailId, password, startDate, endDate, batchId } = req.body;
+    const { firstName, lastName, enrollmentNo, emailId, password,batchstartDate, startDate, endDate, batchId } = req.body;
     const student = await Student.findById(req.params.id);
 
     if (!student) {
@@ -194,6 +195,7 @@ router.put('/:id', async (req, res) => {
     student.enrollmentNo = enrollmentNo;
     student.emailId = emailId;
     student.password = password;
+    student.batchstartDate = new Date(batchstartDate);
     student.startDate = new Date(startDate);
     student.endDate = new Date(endDate);
     student.batchId = batchId;
