@@ -101,8 +101,6 @@ const handleAddStudent = async (newStudent) => {
     try {
         const response = await axios.post(`${APP}/api/student`, newStudent);
         const addedStudent = response.data;
-
-        // Assuming students and setStudents are defined correctly as state variables
         setStudents([...students, addedStudent]);
 
         // Optionally, clear search state
@@ -112,6 +110,7 @@ const handleAddStudent = async (newStudent) => {
         setShowStudentDetail(false);
 
         console.log('Student added successfully:', addedStudent);
+        window.location.reload();
     } catch (error) {
         console.error('Error adding student:', error);
         // Optionally, show an error message to the user

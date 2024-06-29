@@ -44,6 +44,7 @@ const handleSubmit = async (e) => {
             const response = await axios.post(`${APP}/api/student`, student);
             console.log('Student added successfully:', response.data);
             onAddStudent(response.data);
+            window.location.reload();
             // Additional logic
         }
 
