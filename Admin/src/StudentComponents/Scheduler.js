@@ -56,10 +56,30 @@ const Scheduler = () => {
 
   const fullName = `${studentName.firstName} ${studentName.lastName}`;
   const date = `${batchData.startDate}`
+  const joiningdate = `${studentName.startDate}`
+
+  const batchDate = new Date(date);
+  console.log(date)
+  const joiningDate1 = new Date(joiningdate);
+  
+  console.log('Parsed Batch Date:', batchDate);
+console.log('Parsed Joining Date:', joiningDate1);
+
+  const diff = joiningDate1 - batchDate;
+
+// Check if the difference calculation is valid
+if (isNaN(diff)) {
+  console.error('Invalid date difference:', diff);
+} else {
+  // Convert the difference to days
+  const diffInDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+  console.log(`Difference between dates: ${diffInDays} days`);
+}
+
   
    const clickableRange = joinDate
     ? {
-        start: new Date(new Date(joinDate).setDate(new Date(joinDate).getDate() - 7)),
+        start: new Date(new Date(joinDate).setDate(new Date(joinDate).getDate() - 6)),
         end: new Date(studentName.endDate),
       }
     : null;
@@ -69,7 +89,7 @@ const Scheduler = () => {
     <div>
       <Nav studentName={fullName} panelType="student" />
       <div style={{display:"flex", flexWrap:"wrap"}}>
-      <Calendar isAdmin={false} joiningDate={joinDate} batchStartDate={date} showDemoClasses={false} clickableRange={clickableRange}/>
+      <Calendar isAdmin={false} joiningDate={joiningdate} batchStartDate={date} showDemoClasses={false} clickableRange={clickableRange}/>
         <Scroll showbar={false} />
         </div>
     </div>

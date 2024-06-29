@@ -1,16 +1,38 @@
-import React, { createContext, useState } from 'react';
+// DateContext.js
+import React, { createContext, useState, useEffect } from 'react';
 
 export const DateContext = createContext();
 
 export const DateProvider = ({ children }) => {
-  // Get today's date in UTC and then convert it to IST
-  const todayUTC = new Date();
-  const istDate = new Date(todayUTC.getTime() + (5.5 * 60 * 60 * 1000)); // IST offset in milliseconds
-  
-  // Format IST date to YYYY-MM-DD format
-  const formattedDate = istDate.toISOString().split('T')[0];
+  // Function to get today's date in YYYY-MM-DD format
+  const getTodayDateString = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
-  const [clickedDate, setClickedDate] = useState(formattedDate);
+  // Function to check if a date string is valid (not null or empty)
+  const isValidDate = (dateString) => {
+    return dateString && dateString.trim() !== '';
+  };
+
+  // Initialize clickedDate from local storage or default to today's date
+  const initialDate = localStorage.getItem('clickedDate') || getTodayDateString();
+  const [clickedDate, setClickedDate] = useState(initialDate);
+
+  // Store clickedDate in local storage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('clickedDate', clickedDate);
+  }, [clickedDate]);
+
+  // Ensure clickedDate is valid on mount, default to today's date if not
+  useEffect(() => {
+    if (!isValidDate(clickedDate)) {
+      setClickedDate(getTodayDateString());
+    }
+  }, []);
 
   return (
     <DateContext.Provider value={{ clickedDate, setClickedDate }}>

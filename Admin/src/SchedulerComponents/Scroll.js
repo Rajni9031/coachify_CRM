@@ -12,7 +12,9 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
   const [showMenu, setShowMenu] = useState(false);
   const { batchId } = useParams();
   const { clickedDate } = useContext(DateContext);
-  const [allNotes, setAllNotes] = useState([]); // Initialize with an empty array
+
+  // Initialize allNotes with an empty array
+  const [allNotes, setAllNotes] = useState([]);
   const [modalType, setModalType] = useState(null);
   const [selectedNoteIndex, setSelectedNoteIndex] = useState(null);
 
@@ -37,7 +39,7 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
     const fetchNotes = async () => {
       try {
         const response = await axios.get(`${APP}/api/batches/${batchId}/schedule/${clickedDate}`);
-        setAllNotes(response.data.classes || []); // Ensure response.data.classes is defined
+        setAllNotes(response.data.classes || []); // Ensure to handle undefined response.data.classes
       } catch (error) {
         console.error('Error fetching notes:', error);
       }
@@ -94,7 +96,7 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
   };
 
   const handleDeleteNote = async () => {
-    if (selectedNoteIndex !== null) {
+    if (selectedNoteIndex !== null && allNotes.length > 0) {
       const noteToDelete = allNotes[selectedNoteIndex];
       const classId = noteToDelete._id;
 
@@ -110,10 +112,11 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
       }
     }
     setModalType(null);
+    window.location.reload();
   };
 
   const handleEditNote = async () => {
-    if (selectedNoteIndex !== null) {
+    if (selectedNoteIndex !== null && allNotes.length > 0) {
       const noteToEdit = allNotes[selectedNoteIndex];
       const classId = noteToEdit._id;
 
@@ -154,6 +157,7 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
       }
     }
     setModalType(null);
+    window.location.reload();
   };
 
   const modalRef = useRef();
@@ -284,7 +288,7 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
             type="text"
             placeholder="Time"
             value={newNote.time}
-            onChange={(e) => setNewNote({ ...newNote, time: e.target.value            })}
+            onChange={(e) => setNewNote({ ...newNote, time: e.target.value })}
             style={{
               width: '100%',
               padding: '10px',
@@ -332,7 +336,7 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
         </div>
       )}
 
-{modalType === 'delete' && (
+      {modalType === 'delete' && (
         <div ref={modalRef} style={{ 
           position: 'fixed', 
           top: '50%', 

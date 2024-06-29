@@ -1,12 +1,25 @@
+
 import React, { useState, useEffect, useContext } from "react";
 import { DateContext } from './DateContext';
 
-const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange, isAdmin }) => {
+const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange }) => {
   const [date, setDate] = useState(new Date());
   const [month, setMonth] = useState(date.getMonth());
   const [year, setYear] = useState(date.getFullYear());
   const [selectedDate, setSelectedDate] = useState(null);
   const { setClickedDate } = useContext(DateContext);
+
+  const { clickedDate } = useContext(DateContext);
+
+  // Function to format the clickedDate
+  const formatClickedDate = (dateString) => {
+    const selectedDate = new Date(dateString);
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    return `${selectedDate.getDate()} ${months[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`;
+  };
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -72,11 +85,9 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange, is
         selectedDate.getMonth() === month &&
         selectedDate.getFullYear() === year;
 
-      const isInRange = isAdmin || (
-        clickableRange
-          ? isDateInRange(currentDate, clickableRange.start || oneWeekBeforeJoiningStart, clickableRange.end || joiningDate)
-          : isDateInRange(currentDate, oneWeekBeforeJoiningStart, joiningDate)
-      );
+      const isInRange = clickableRange
+        ? isDateInRange(currentDate, clickableRange.start, clickableRange.end)
+        : true;
 
       const isToday =
         i === today.getDate() &&
@@ -209,10 +220,9 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange, is
         fontFamily: "Poppins, sans-serif",
       }}
     >
-      {selectedDate && (
+      {clickedDate && (
         <div style={{ marginBottom: "1rem", textAlign: "center", fontWeight: "800" }}>
-          Selected Date:{" "}
-          {`${selectedDate.getDate()} ${months[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`}
+          Selected Date: {formatClickedDate(clickedDate)}
         </div>
       )}
       <header
