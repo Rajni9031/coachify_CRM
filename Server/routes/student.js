@@ -183,7 +183,7 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    const { firstName, lastName, enrollmentNo, emailId, password,batchstartDate, startDate, endDate, batchId } = req.body;
+    const { firstName, lastName, enrollmentNo, emailId, password, batchstartDate, startDate, endDate, batchId } = req.body;
     const student = await Student.findById(req.params.id);
 
     if (!student) {

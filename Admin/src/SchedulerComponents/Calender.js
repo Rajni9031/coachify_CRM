@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext } from "react";
 import { DateContext } from './DateContext';
 
@@ -39,11 +38,10 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange }) 
     const end = new Date(year, month, endDateOfMonth).getDay();
     const today = new Date();
 
+    const batchStartDateObj = new Date(batchStartDate);
     const joiningDateObj = new Date(joiningDate);
-    const oneWeekBeforeJoiningStart = new Date(joiningDateObj);
-    oneWeekBeforeJoiningStart.setDate(joiningDateObj.getDate() - 7);
-    const oneWeekBeforeJoiningEnd = new Date(joiningDateObj);
-    oneWeekBeforeJoiningEnd.setDate(joiningDateObj.getDate() - 1);
+    const oneDayBeforeJoining = new Date(joiningDateObj);
+    oneDayBeforeJoining.setDate(joiningDateObj.getDate() - 1);
 
     let datesHtml = [];
 
@@ -94,8 +92,8 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange }) 
         month === today.getMonth() &&
         year === today.getFullYear();
 
-      const isOneWeekBeforeJoining =
-        currentDate >= oneWeekBeforeJoiningStart && currentDate <= oneWeekBeforeJoiningEnd;
+      const isBetweenBatchStartAndJoining =
+        currentDate >= batchStartDateObj && currentDate <= oneDayBeforeJoining;
 
       datesHtml.push(
         <li
@@ -113,10 +111,10 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange }) 
             style={{
               width: "2rem",
               height: "2rem",
-              backgroundColor: isSelected ? "#fff" : isOneWeekBeforeJoining ? "#ffcccc" : "transparent",
+              backgroundColor: isSelected ? "#fff" : isBetweenBatchStartAndJoining ? "#ffcccc" : "transparent",
               borderRadius: isSelected ? "50%" : "none",
-              color: isSelected ? "#000" : isToday ? "#fff" : isOneWeekBeforeJoining ? "#ff0000" : "inherit",
-              fontWeight: isOneWeekBeforeJoining ? "bold" : "normal",
+              color: isSelected ? "#000" : isToday ? "#fff" : isBetweenBatchStartAndJoining ? "#ff0000" : "inherit",
+              fontWeight: isBetweenBatchStartAndJoining ? "bold" : "normal",
               cursor: isInRange ? "pointer" : "not-allowed",
               border: "none",
               outline: "none",

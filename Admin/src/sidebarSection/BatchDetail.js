@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { FaEdit, FaTrash, FaArrowLeft } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaArrowLeft, FaMoneyBillWave } from 'react-icons/fa';
 import StudentDetail from './StudentDetail';
 
 const APP = process.env.REACT_APP_API_URL;
@@ -137,22 +137,26 @@ const BatchDetail = () => {
         navigate(`/schedule/${batchId}`);
     };
 
+    const handlePaymentClick = (student) => {
+        navigate(`/fee-management/${student.enrollmentNo}`);
+    };
+
     return (
         <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
 
             {/* Batch Details */}
             <div style={{ marginBottom: '20px' }}>
                 <div className="pagetitle" style={{ marginBottom: '20px' }}>
-             <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => navigate(-1)}>
-                <FaArrowLeft
-                    style={{
-                        fontSize: '24px',
-                        color: 'black',
-                        marginRight: '5px'
-                    }}
-                />
-                <span style={{ color: 'black' }}>Back</span>
-            </div>
+                    <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => navigate(-1)}>
+                        <FaArrowLeft
+                            style={{
+                                fontSize: '24px',
+                                color: 'black',
+                                marginRight: '5px'
+                            }}
+                        />
+                        <span style={{ color: 'black' }}>Back</span>
+                    </div>
                     <h1>{batch.name}</h1>
                 </div>
                 <div style={{ position: 'fixed', top: '20px', right: '20px' }}>
@@ -185,12 +189,9 @@ const BatchDetail = () => {
                 </section>
             </div>
 
-            
-
             {/* Search and Sort Bar */}
             <div className="search-sort-bar" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                 
                 </div>
                 <div>
                     <input
@@ -249,6 +250,9 @@ const BatchDetail = () => {
                                 </button>
                                 <button onClick={() => handleDeleteStudent(student.enrollmentNo)} style={{ all: 'unset', cursor: 'pointer', color: 'red' }}>
                                     <FaTrash />
+                                </button>
+                                <button onClick={() => handlePaymentClick(student)} style={{ all: 'unset', cursor: 'pointer', color: 'green' }}>
+                                    <FaMoneyBillWave />
                                 </button>
                             </td>
                         </tr>

@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import Nav from '../SchedulerComponents/Nav';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Calendar from '../SchedulerComponents/Calender';
-import { BatchContext } from '../ContextApi/BatchContext'
+// import { BatchContext } from '../ContextApi/BatchContext'
 import Scroll from '../SchedulerComponents/Scroll'; // Adjust the path as necessary
 
 const APP = process.env.REACT_APP_API_URL;
@@ -11,13 +11,13 @@ const APP = process.env.REACT_APP_API_URL;
 const Scheduler = () => {
   const { username } = useParams();
   // const [selectedDate, setSelectedDate] = useState(null);
-  const [scheduleData, setScheduleData] = useState([]);
-  const { batchData } = useContext(BatchContext);
+  // const { batchData } = useContext(BatchContext);
   const [joinDate, setJoinDate] = useState(null); // Initialize joinDate state
   const [studentName, setStudentName] = useState({
     firstName: '',
     lastName: '',
     startDate: '',
+    batchstartDate: '',
     endDate: '',
   });
 
@@ -40,47 +40,15 @@ const Scheduler = () => {
     }
   }, [username]);
 
-  const fetchScheduleData = async (date) => {
-    try {
-      const response = await axios.get(`${APP}/api/schedule/${date}`);
-      setScheduleData(response.data);
-    } catch (error) {
-      console.error('Failed to fetch schedule:', error);
-    }
-  };
-
-  // const handleDateClick = (date) => {
-  //   setSelectedDate(date);
-  //   fetchScheduleData(date);
-  // };
 
   const fullName = `${studentName.firstName} ${studentName.lastName}`;
-  const date = `${batchData.startDate}`
+  const date = `${studentName.batchstartDate}`
   const joiningdate = `${studentName.startDate}`
-
-  const batchDate = new Date(date);
-  console.log(date)
-  const joiningDate1 = new Date(joiningdate);
-  
-  console.log('Parsed Batch Date:', batchDate);
-console.log('Parsed Joining Date:', joiningDate1);
-
-  const diff = joiningDate1 - batchDate;
-
-// Check if the difference calculation is valid
-if (isNaN(diff)) {
-  console.error('Invalid date difference:', diff);
-} else {
-  // Convert the difference to days
-  const diffInDays = Math.floor(diff / (1000 * 60 * 60 * 24));
-  console.log(`Difference between dates: ${diffInDays} days`);
-}
-
   
    const clickableRange = joinDate
     ? {
-        start: new Date(new Date(joinDate).setDate(new Date(joinDate).getDate() - 6)),
-        end: new Date(studentName.endDate),
+        start: new Date(new Date(studentName.batchstartDate).setDate(new Date(studentName.batchstartDate).getDate() - 1)),
+       end: new Date(studentName.endDate),
       }
     : null;
 
@@ -89,7 +57,7 @@ if (isNaN(diff)) {
     <div>
       <Nav studentName={fullName} panelType="student" />
       <div style={{display:"flex", flexWrap:"wrap"}}>
-      <Calendar isAdmin={false} joiningDate={joiningdate} batchStartDate={date} showDemoClasses={false} clickableRange={clickableRange}/>
+      <Calendar isAdmin={false} batchStartDate={date} joiningDate={joiningdate} showDemoClasses={false} clickableRange={clickableRange}/>
         <Scroll showbar={false} />
         </div>
     </div>

@@ -9,7 +9,6 @@ const StudentDetail = ({ onAddStudent, onClose, studentToEdit, batchId }) => {
         lastName: '',
         enrollmentNo: '',
         emailId: '',
-        // password: '',
         batchstartDate: '',
         startDate: '',
         endDate: '',
@@ -30,7 +29,7 @@ const StudentDetail = ({ onAddStudent, onClose, studentToEdit, batchId }) => {
         }));
     };
 
- const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
@@ -38,12 +37,12 @@ const StudentDetail = ({ onAddStudent, onClose, studentToEdit, batchId }) => {
                 // Edit student
                 await axios.put(`${APP}/api/student/${studentToEdit._id}`, student);
                 setStudent(prevStudents => prevStudents.map(s => s._id === studentToEdit._id ? student : s));
-                window.location.reload()
+                window.location.reload();
             } else {
                 // Add new student
                 const response = await axios.post(`${APP}/api/student`, student);
                 onAddStudent(response.data);
-                console.log(response.data)
+                console.log(response.data);
                 window.location.reload(false);
             }
 
@@ -53,7 +52,6 @@ const StudentDetail = ({ onAddStudent, onClose, studentToEdit, batchId }) => {
             console.error('Error submitting form:', error);
         }
     };
-
 
     return (
         <div className="student-detail-modal" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -76,13 +74,9 @@ const StudentDetail = ({ onAddStudent, onClose, studentToEdit, batchId }) => {
                         <label>Email ID:</label>
                         <input type="email" name="emailId" value={student.emailId} onChange={handleChange} style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }} />
                     </div>
-                    {/* <div style={{ marginBottom: '10px' }}>
-                        <label>Password:</label>
-                        <input type="password" name="password" value={student.password} onChange={handleChange} style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }} />
-                    </div> */}
                     <div style={{ marginBottom: '10px' }}>
                         <label>Batch Start Date:</label>
-                        <input type="date" name="startDate" value={student.batchstartDate} onChange={handleChange} style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }} />
+                        <input type="date" name="batchstartDate" value={student.batchstartDate} onChange={handleChange} style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }} />
                     </div>
                     <div style={{ marginBottom: '10px' }}>
                         <label>Start Date:</label>
