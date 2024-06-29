@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaEdit, FaTrash, FaArrowLeft, FaMoneyBillWave } from 'react-icons/fa';
@@ -97,6 +97,29 @@ const BatchDetail = () => {
         return pageNumbers;
     };
 
+const handleAddStudent = async (newStudent) => {
+    try {
+        const response = await axios.post(`${APP}/api/student`, newStudent);
+        const addedStudent = response.data;
+
+        // Assuming students and setStudents are defined correctly as state variables
+        setStudents([...students, addedStudent]);
+
+        // Optionally, clear search state
+        setSearch('');
+
+        // Optionally, handle UI changes without reloading the page
+        setShowStudentDetail(false);
+
+        console.log('Student added successfully:', addedStudent);
+    } catch (error) {
+        console.error('Error adding student:', error);
+        // Optionally, show an error message to the user
+    }
+};
+
+
+
     const handleEditStudent = (student) => {
         setStudentToEdit(student);
         setShowStudentDetail(true);
@@ -117,24 +140,16 @@ const BatchDetail = () => {
         setShowStudentDetail(true);
     };
 
-    const handleAddStudent = async (newStudent) => {
-        try {
-            const response = await axios.post(`${APP}/api/student`, newStudent);
-            const addedStudent = response.data;
-            setStudents([...students, addedStudent]);
-            setShowStudentDetail(false);
-            setSearch('');
-        } catch (error) {
-            console.error('Error adding student:', error);
-        }
-    };
-
     const handleCloseStudentDetail = () => {
         setShowStudentDetail(false);
     };
 
     const handleScheduleClick = () => {
         navigate(`/schedule/${batchId}`);
+    };
+
+    const handleFeeManagementClick = () => {
+        navigate(`/fee-management`);
     };
 
     const handlePaymentClick = (student) => {
@@ -167,11 +182,25 @@ const BatchDetail = () => {
                             color: 'white',
                             border: 'none',
                             cursor: 'pointer',
-                            borderRadius: '5px'
+                            borderRadius: '5px',
+                            marginRight: '10px'
                         }}
                         onClick={handleScheduleClick}
                     >
                         Schedule
+                    </button>
+                    <button
+                        style={{
+                            padding: '10px 20px',
+                            backgroundColor: '#28a745',
+                            color: 'white',
+                            border: 'none',
+                            cursor: 'pointer',
+                            borderRadius: '5px'
+                        }}
+                        onClick={handleFeeManagementClick}
+                    >
+                        Fee Management
                     </button>
                 </div>
 

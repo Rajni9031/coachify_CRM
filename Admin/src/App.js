@@ -11,6 +11,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import StudentLogin from './Student/StudentLogin';
 import StudentFee from './feeManagement/StudentFee';
+import AllStudentFee from './feeManagement/AllStudentFee';
 import ScheduleHome from './Scheduler/SchedulerHome';
 import { DateProvider } from './SchedulerComponents/DateContext';
 import { UserProvider } from './ContextApi/UserContext';
@@ -26,7 +27,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<StudentLogin />} />
             {/* <Route path="/:username" element={<StudentHome />} /> */}
-            <Route path="/fee-management/:enrollmentNo" element={<StudentFee/>} /> 
+            <Route path="/fee-management/:enrollmentNo" element={<StudentFee />} /> 
+            <Route path="/fee-management" element={ <AllStudentFee/>} />
           <Route path="/:username/:batchId" element={<Scheduler />} />
           <Route path="/admin" element={<Login />} />
           <Route path="/admin/:username" element={<Home />} />

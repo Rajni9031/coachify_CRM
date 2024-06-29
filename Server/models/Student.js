@@ -22,8 +22,8 @@ const studentSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   enrollmentNo: { type: String, required: true, unique: true },
   emailId: { type: String, required: true },
-  username: { type: String, unique: true }, // Add username field
-  password: { type: String, required: true }, 
+  username: { type: String }, // Add username field
+  password: { type: String, required: true,  unique: true }, 
   batchstartDate: { type: String, required: true },
   startDate: { type: String, required: true },
   endDate: { type: String, required: true },
