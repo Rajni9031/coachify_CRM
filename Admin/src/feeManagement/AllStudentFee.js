@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const AllStudentFee = ({ batchId }) => {
   const [students, setStudents] = useState([]);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
     if (batchId) {
@@ -13,6 +14,15 @@ const AllStudentFee = ({ batchId }) => {
         .catch(error => console.error('Error fetching fee details:', error));
     }
   }, [batchId]);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const containerStyle = {
     background: '#f4f4f9',
@@ -74,16 +84,6 @@ const AllStudentFee = ({ batchId }) => {
     position: 'relative',
   };
 
-  const tdBeforeStyle = {
-    content: 'attr(data-label)',
-    position: 'absolute',
-    left: '0',
-    width: '50%',
-    paddingLeft: '15px',
-    fontWeight: 'bold',
-    textAlign: 'left',
-  };
-
   return (
     <div style={containerStyle}>
       <h1 style={headingStyle}>Fee Details of All Students</h1>
@@ -112,43 +112,43 @@ const AllStudentFee = ({ batchId }) => {
                 }
               >
                 <td
-                  style={{ ...thTdStyle, ...(window.innerWidth <= 600 ? tdResponsiveStyle : {}) }}
+                  style={{ ...thTdStyle, ...(windowWidth <= 600 ? tdResponsiveStyle : {}) }}
                   data-label="Student Name"
                 >
                   {student.studentName}
                 </td>
                 <td
-                  style={{ ...thTdStyle, ...(window.innerWidth <= 600 ? tdResponsiveStyle : {}) }}
+                  style={{ ...thTdStyle, ...(windowWidth <= 600 ? tdResponsiveStyle : {}) }}
                   data-label="Enrollment No"
                 >
                   {student.enrollmentNo}
                 </td>
                 <td
-                  style={{ ...thTdStyle, ...(window.innerWidth <= 600 ? tdResponsiveStyle : {}) }}
+                  style={{ ...thTdStyle, ...(windowWidth <= 600 ? tdResponsiveStyle : {}) }}
                   data-label="Total Fees"
                 >
                   {student.totalFee}
                 </td>
                 <td
-                  style={{ ...thTdStyle, ...(window.innerWidth <= 600 ? tdResponsiveStyle : {}) }}
+                  style={{ ...thTdStyle, ...(windowWidth <= 600 ? tdResponsiveStyle : {}) }}
                   data-label="Registration Fees"
                 >
                   {student.registrationFee}
                 </td>
                 <td
-                  style={{ ...thTdStyle, ...(window.innerWidth <= 600 ? tdResponsiveStyle : {}) }}
+                  style={{ ...thTdStyle, ...(windowWidth <= 600 ? tdResponsiveStyle : {}) }}
                   data-label="Scholarship"
                 >
                   {student.scholarship}
                 </td>
                 <td
-                  style={{ ...thTdStyle, ...(window.innerWidth <= 600 ? tdResponsiveStyle : {}) }}
+                  style={{ ...thTdStyle, ...(windowWidth <= 600 ? tdResponsiveStyle : {}) }}
                   data-label="Installments"
                 >
                   <ul style={{ padding: '0', margin: '0', listStyleType: 'none' }}>
                     {student.installments.map((installment, idx) => (
                       <li key={idx} style={{ marginBottom: '5px' }}>
-                        Amount: {installment.amount}, Due: {new Date(installment.dueDate).toLocaleDateString()}, Paid: {installment.paid ? 'Yes' : 'No'}
+                        Amount: {installment.amount}, Due: {new Date(installment.dueDate).toLocaleDateString()}
                       </li>
                     ))}
                   </ul>

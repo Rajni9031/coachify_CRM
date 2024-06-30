@@ -32,13 +32,16 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange }) 
     return d >= s && d <= e;
   };
 
-  const renderCalendar = () => {
+const renderCalendar = () => {
     const start = new Date(year, month, 1).getDay();
     const endDateOfMonth = new Date(year, month + 1, 0).getDate();
     const end = new Date(year, month, endDateOfMonth).getDay();
     const today = new Date();
 
     const batchStartDateObj = new Date(batchStartDate);
+    const oneDayBeforeBatchStart = new Date(batchStartDateObj);
+    oneDayBeforeBatchStart.setDate(batchStartDateObj.getDate() - 1); // Subtract one day
+
     const joiningDateObj = new Date(joiningDate);
     const oneDayBeforeJoining = new Date(joiningDateObj);
     oneDayBeforeJoining.setDate(joiningDateObj.getDate() - 1);
@@ -46,135 +49,136 @@ const Calendar = ({ onDateClick, joiningDate, batchStartDate, clickableRange }) 
     let datesHtml = [];
 
     for (let i = start; i > 0; i--) {
-      const prevMonthDay = new Date(year, month, -i + 1);
-      datesHtml.push(
-        <li
-          key={`prev-${i}`}
-          style={{
-            color: "#ccc",
-            width: "calc(100% / 7)",
-            marginTop: "25px",
-            position: "relative",
-            zIndex: 2,
-            opacity: 0.4,
-          }}
-        >
-          <button
-            disabled
-            style={{
-              width: "2rem",
-              height: "2rem",
-              backgroundColor: "transparent",
-              border: "none",
-              cursor: "default",
-            }}
-          >
-            {prevMonthDay.getDate()}
-          </button>
-        </li>
-      );
+        const prevMonthDay = new Date(year, month, -i + 1);
+        datesHtml.push(
+            <li
+                key={`prev-${i}`}
+                style={{
+                    color: "#ccc",
+                    width: "calc(100% / 7)",
+                    marginTop: "25px",
+                    position: "relative",
+                    zIndex: 2,
+                    opacity: 0.4,
+                }}
+            >
+                <button
+                    disabled
+                    style={{
+                        width: "2rem",
+                        height: "2rem",
+                        backgroundColor: "transparent",
+                        border: "none",
+                        cursor: "default",
+                    }}
+                >
+                    {prevMonthDay.getDate()}
+                </button>
+            </li>
+        );
     }
 
     for (let i = 1; i <= endDateOfMonth; i++) {
-      const currentDate = new Date(year, month, i);
-      const isSelected =
-        selectedDate &&
-        selectedDate.getDate() === i &&
-        selectedDate.getMonth() === month &&
-        selectedDate.getFullYear() === year;
+        const currentDate = new Date(year, month, i);
+        const isSelected =
+            selectedDate &&
+            selectedDate.getDate() === i &&
+            selectedDate.getMonth() === month &&
+            selectedDate.getFullYear() === year;
 
-      const isInRange = clickableRange
-        ? isDateInRange(currentDate, clickableRange.start, clickableRange.end)
-        : true;
+        const isInRange = clickableRange
+            ? isDateInRange(currentDate, clickableRange.start, clickableRange.end)
+            : true;
 
-      const isToday =
-        i === today.getDate() &&
-        month === today.getMonth() &&
-        year === today.getFullYear();
+        const isToday =
+            i === today.getDate() &&
+            month === today.getMonth() &&
+            year === today.getFullYear();
 
-      const isBetweenBatchStartAndJoining =
-        currentDate >= batchStartDateObj && currentDate <= oneDayBeforeJoining;
+        const isBetweenBatchStartAndJoining =
+            currentDate >= oneDayBeforeBatchStart && currentDate <= oneDayBeforeJoining;
 
-      datesHtml.push(
-        <li
-          key={`current-${i}`}
-          style={{
-            width: "calc(100% / 7)",
-            marginTop: "25px",
-            position: "relative",
-            zIndex: 2,
-          }}
-        >
-          <button
-            onClick={() => handleDateClick(i)}
-            disabled={!isInRange}
-            style={{
-              width: "2rem",
-              height: "2rem",
-              backgroundColor: isSelected ? "#fff" : isBetweenBatchStartAndJoining ? "#ffcccc" : "transparent",
-              borderRadius: isSelected ? "50%" : "none",
-              color: isSelected ? "#000" : isToday ? "#fff" : isBetweenBatchStartAndJoining ? "#ff0000" : "inherit",
-              fontWeight: isBetweenBatchStartAndJoining ? "bold" : "normal",
-              cursor: isInRange ? "pointer" : "not-allowed",
-              border: "none",
-              outline: "none",
-              position: "relative",
-            }}
-          >
-            {isToday && (
-              <span
+        datesHtml.push(
+            <li
+                key={`current-${i}`}
                 style={{
-                  content: '""',
-                  width: "2rem",
-                  height: "2rem",
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  backgroundColor: "#000",
-                  borderRadius: "50%",
-                  zIndex: -1,
+                    width: "calc(100% / 7)",
+                    marginTop: "25px",
+                    position: "relative",
+                    zIndex: 2,
                 }}
-              ></span>
-            )}
-            {i}
-          </button>
-        </li>
-      );
+            >
+                <button
+                    onClick={() => handleDateClick(i)}
+                    disabled={!isInRange}
+                    style={{
+                        width: "2rem",
+                        height: "2rem",
+                        backgroundColor: isSelected ? "#fff" : isBetweenBatchStartAndJoining ? "#ffcccc" : "transparent",
+                        borderRadius: isSelected ? "50%" : "none",
+                        color: isSelected ? "#000" : isToday ? "#fff" : isBetweenBatchStartAndJoining ? "#ff0000" : "inherit",
+                        fontWeight: isBetweenBatchStartAndJoining ? "bold" : "normal",
+                        cursor: isInRange ? "pointer" : "not-allowed",
+                        border: "none",
+                        outline: "none",
+                        position: "relative",
+                    }}
+                >
+                    {isToday && (
+                        <span
+                            style={{
+                                content: '""',
+                                width: "2rem",
+                                height: "2rem",
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                backgroundColor: "#000",
+                                borderRadius: "50%",
+                                zIndex: -1,
+                            }}
+                        ></span>
+                    )}
+                    {i}
+                </button>
+            </li>
+        );
     }
 
     for (let i = 1; i < 7 - end; i++) {
-      const nextMonthDay = new Date(year, month + 1, i);
-      datesHtml.push(
-        <li
-          key={`next-${i}`}
-          style={{
-            color: "#ccc",
-            width: "calc(100% / 7)",
-            marginTop: "25px",
-            position: "relative",
-            zIndex: 2,
-            opacity: 0.4,
-          }}
-        >
-          <button
-            disabled
-            style={{
-              width: "2rem",
-              height: "2rem",
-              backgroundColor: "transparent",
-              border: "none",
-              cursor: "default",
-            }}
-          >
-            {nextMonthDay.getDate()}
-          </button>
-        </li>
-      );
+        const nextMonthDay = new Date(year, month + 1, i);
+        datesHtml.push(
+            <li
+                key={`next-${i}`}
+                style={{
+                    color: "#ccc",
+                    width: "calc(100% / 7)",
+                    marginTop: "25px",
+                    position: "relative",
+                    zIndex: 2,
+                    opacity: 0.4,
+                }}
+            >
+                <button
+                    disabled
+                    style={{
+                        width: "2rem",
+                        height: "2rem",
+                        backgroundColor: "transparent",
+                        border: "none",
+                        cursor: "default",
+                    }}
+                >
+                    {nextMonthDay.getDate()}
+                </button>
+            </li>
+        );
     }
 
     return datesHtml;
-  };
+};
+
 
   const handleNavClick = (direction) => {
     if (direction === "prev") {

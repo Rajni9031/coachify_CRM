@@ -47,7 +47,7 @@ const Scheduler = () => {
   
    const clickableRange = joinDate
     ? {
-        start: new Date(new Date(studentName.batchstartDate).setDate(new Date(studentName.batchstartDate).getDate() - 1)),
+        start: new Date(new Date(studentName.batchstartDate).setDate(new Date(studentName.batchstartDate).getDate()-1)),
        end: new Date(studentName.endDate),
       }
     : null;
