@@ -244,6 +244,17 @@ router.delete('/enrollmentNo/:enrollmentNo', async (req, res) => {
   }
 });
 
+router.get('/:id', (req, res) => {
+    const studentId = req.params.id;
+    const student = Student.find(s => s.id === studentId);
+
+    if (student) {
+        res.json(student);
+    } else {
+        res.status(404).json({ message: 'Student not found' });
+    }
+});
+
 router.get('/username/:username', async (req, res) => {
   try {
     const username = req.params.username;

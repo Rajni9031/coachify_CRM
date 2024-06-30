@@ -1,33 +1,26 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const AllStudentFee = () => {
+const AllStudentFee = ({ batchId }) => {
   const [students, setStudents] = useState([]);
 
   useEffect(() => {
-    // Simulating data fetch, you might replace this with an actual API call
-    const fetchedStudents = [
-      { id: 1, name: 'John Doe', totalFees: 1000, paidFees: 600, dueFees: 400 },
-      { id: 2, name: 'Jane Smith', totalFees: 1200, paidFees: 1200, dueFees: 0 },
-      { id: 2, name: 'Jane Smith', totalFees: 1200, paidFees: 1200, dueFees: 0 },
-      { id: 2, name: 'Jane Smith', totalFees: 1200, paidFees: 1200, dueFees: 0 },
-      { id: 2, name: 'Jane Smith', totalFees: 1200, paidFees: 1200, dueFees: 0 },
-      { id: 3, name: 'Alice Johnson', totalFees: 800, paidFees: 300, dueFees: 500 },
-      { id: 3, name: 'Alice Johnson', totalFees: 800, paidFees: 300, dueFees: 500 },
-      { id: 3, name: 'Alice Johnson', totalFees: 800, paidFees: 300, dueFees: 500 },
-      { id: 3, name: 'Alice Johnson', totalFees: 800, paidFees: 300, dueFees: 500 },
-      // Add more students as needed
-    ];
-    setStudents(fetchedStudents);
-  }, []);
+    if (batchId) {
+      axios.get(`${process.env.REACT_APP_API_URL}/api/fees/batch/${batchId}`)
+        .then(response => {
+          setStudents(response.data);
+        })
+        .catch(error => console.error('Error fetching fee details:', error));
+    }
+  }, [batchId]);
 
   const containerStyle = {
-    background: '#fff',
-    padding: '20px',
-    borderRadius: '8px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    maxWidth: '800px',
-    width: '100%',
-    margin: '20px auto',
+    background: '#f4f4f9',
+    minHeight: '100vh',
+    padding: '40px 20px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     boxSizing: 'border-box',
   };
 
@@ -35,31 +28,42 @@ const AllStudentFee = () => {
     color: '#333',
     textAlign: 'center',
     marginBottom: '20px',
+    fontSize: '2rem',
   };
 
   const tableContainerStyle = {
+    width: '100%',
+    maxWidth: '1200px',
     overflowX: 'auto',
+    background: '#fff',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
   };
 
   const tableStyle = {
     width: '100%',
     borderCollapse: 'collapse',
-    marginBottom: '20px',
   };
 
   const thTdStyle = {
     padding: '12px 15px',
     border: '1px solid #ddd',
     textAlign: 'left',
+    whiteSpace: 'nowrap',
   };
 
   const thStyle = {
     ...thTdStyle,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#3f51b5',
+    color: '#fff',
   };
 
   const trEvenStyle = {
     backgroundColor: '#f9f9f9',
+  };
+
+  const highlightStyle = {
+    backgroundColor: '#dff0d8',
   };
 
   const tdResponsiveStyle = {
@@ -80,29 +84,27 @@ const AllStudentFee = () => {
     textAlign: 'left',
   };
 
-  const highlightStyle = {
-    backgroundColor: 'lightgreen',
-  };
-
   return (
     <div style={containerStyle}>
-      <h1 style={headingStyle}>Fee Management</h1>
+      <h1 style={headingStyle}>Fee Details of All Students</h1>
       <div style={tableContainerStyle}>
         <table style={tableStyle}>
           <thead>
             <tr>
               <th style={thStyle}>Student Name</th>
+              <th style={thStyle}>Enrollment No</th>
               <th style={thStyle}>Total Fees</th>
-              <th style={thStyle}>Paid Fees</th>
-              <th style={thStyle}>Due Fees</th>
+              <th style={thStyle}>Registration Fees</th>
+              <th style={thStyle}>Scholarship</th>
+              <th style={thStyle}>Installments</th>
             </tr>
           </thead>
           <tbody>
             {students.map((student, index) => (
               <tr
-                key={student.id}
+                key={student._id}
                 style={
-                  student.dueFees === 0
+                  student.installments.every(installment => installment.paid)
                     ? highlightStyle
                     : index % 2 === 0
                     ? trEvenStyle
@@ -113,25 +115,43 @@ const AllStudentFee = () => {
                   style={{ ...thTdStyle, ...(window.innerWidth <= 600 ? tdResponsiveStyle : {}) }}
                   data-label="Student Name"
                 >
-                  {student.name}
+                  {student.studentName}
+                </td>
+                <td
+                  style={{ ...thTdStyle, ...(window.innerWidth <= 600 ? tdResponsiveStyle : {}) }}
+                  data-label="Enrollment No"
+                >
+                  {student.enrollmentNo}
                 </td>
                 <td
                   style={{ ...thTdStyle, ...(window.innerWidth <= 600 ? tdResponsiveStyle : {}) }}
                   data-label="Total Fees"
                 >
-                  ${student.totalFees}
+                  {student.totalFee}
                 </td>
                 <td
                   style={{ ...thTdStyle, ...(window.innerWidth <= 600 ? tdResponsiveStyle : {}) }}
-                  data-label="Paid Fees"
+                  data-label="Registration Fees"
                 >
-                  ${student.paidFees}
+                  {student.registrationFee}
                 </td>
                 <td
                   style={{ ...thTdStyle, ...(window.innerWidth <= 600 ? tdResponsiveStyle : {}) }}
-                  data-label="Due Fees"
+                  data-label="Scholarship"
                 >
-                  ${student.dueFees}
+                  {student.scholarship}
+                </td>
+                <td
+                  style={{ ...thTdStyle, ...(window.innerWidth <= 600 ? tdResponsiveStyle : {}) }}
+                  data-label="Installments"
+                >
+                  <ul style={{ padding: '0', margin: '0', listStyleType: 'none' }}>
+                    {student.installments.map((installment, idx) => (
+                      <li key={idx} style={{ marginBottom: '5px' }}>
+                        Amount: {installment.amount}, Due: {new Date(installment.dueDate).toLocaleDateString()}, Paid: {installment.paid ? 'Yes' : 'No'}
+                      </li>
+                    ))}
+                  </ul>
                 </td>
               </tr>
             ))}

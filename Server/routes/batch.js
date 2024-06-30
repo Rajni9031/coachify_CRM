@@ -316,12 +316,6 @@ router.get("/:batchId/schedule/:date", async (req, res) => {
   }
 });
 
-
-
-
-
-
-
 // Delete all schedules for a batch on a particular day
 router.delete('/:batchId/schedule/:date', async (req, res) => {
   try {
