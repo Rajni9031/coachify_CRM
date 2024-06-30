@@ -148,11 +148,11 @@ const handleAddStudent = async (newStudent) => {
     };
 
     const handleFeeManagementClick = () => {
-        navigate(`/fee-management`);
+        navigate(`/fee-management/${batchId}`);
     };
 
     const handlePaymentClick = (student) => {
-        navigate(`/fee-management/${student.enrollmentNo}`);
+        navigate(`/fee-management/${student._id}`);
     };
 
     return (

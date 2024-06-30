@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const path = require("path")
 
 dotenv.config();
 
@@ -21,6 +20,7 @@ app.use('/api/profile', require('./routes/profile'));
 app.use('/api/batches', require('./routes/batch'));
 app.use('/api/student', require('./routes/student'));
 app.use('/api', require('./routes/scheduleList'));
+app.use('/api/fees', require('./routes/fee'));
 
 app.use((req, res, next) => {
   res.status(404).send('Route not found');

@@ -1,20 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import { StudentContext } from '../ContextApi/StudentContext';
 
-const FeeManagementCalculator = () => {
+const APP = process.env.REACT_APP_API_URL;
+
+const StudentFee = () => {
+    const { student, startDate } = useContext(StudentContext) || {};
     const [totalFees, setTotalFees] = useState(90000);
     const [registrationFee, setRegistrationFee] = useState(5000);
     const [discount, setDiscount] = useState(0);
-    const [batchStartDate, setBatchStartDate] = useState('');
     const [finalAmount, setFinalAmount] = useState('');
     const [installmentType, setInstallmentType] = useState('default');
     const [numInstallments, setNumInstallments] = useState(3);
     const [installments, setInstallments] = useState([]);
 
-    const styles = {
+    useEffect(() => {
+        if (student && student._id) {
+            axios.get(`${APP}/api/fees/${student._id}`)
+                .then(response => {
+                    const data = response.data;
+                    setTotalFees(data.totalFee);
+                    setRegistrationFee(data.registrationFee);
+                    setDiscount(data.scholarship);
+                    setInstallments(data.installments);
+                    setFinalAmount((data.totalFee - data.registrationFee - (data.totalFee - data.registrationFee) * (data.scholarship / 100)).toFixed(2));
+                })
+                .catch(error => {
+                    console.error('Error fetching fee details:', error);
+                });
+        }
+    }, [student, startDate]);  
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = date.getDate();
+        const month = date.getMonth() + 1; // Month is zero-based
+        const year = date.getFullYear();
+        return `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+    };
+
+ const styles = {
         mainBody: {
             fontFamily: 'Segoe UI',
             backgroundColor: '#f4f4f4',
-            // margin: '0',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -31,7 +59,6 @@ const FeeManagementCalculator = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            // justifyContent: 'center',
             overflowY: 'auto',
         },
         formSection: {
@@ -111,7 +138,7 @@ const FeeManagementCalculator = () => {
         const final = amountAfterRegistration - discountAmount;
         setFinalAmount(final.toFixed(2));
 
-        const dueDate = new Date(batchStartDate);
+        const dueDate = new Date(startDate); // Use startDate directly
         const newInstallments = [];
 
         if (installmentType === 'default') {
@@ -123,7 +150,7 @@ const FeeManagementCalculator = () => {
             const dates = [3, 6, 9].map(months => {
                 const date = new Date(dueDate);
                 date.setMonth(date.getMonth() + months);
-                return date.toDateString();
+                return date.toISOString().split('T')[0];
             });
 
             amounts.forEach((amount, index) => {
@@ -148,7 +175,7 @@ const FeeManagementCalculator = () => {
                 dueDate.setMonth(dueDate.getMonth() + months);
                 newInstallments.push({
                     amount: ((final * percent) / 100).toFixed(2),
-                    dueDate: dueDate.toDateString(),
+                    dueDate: dueDate.toISOString().split('T')[0],
                 });
             }
 
@@ -162,10 +189,40 @@ const FeeManagementCalculator = () => {
         document.getElementById('installments').scrollIntoView({ behavior: 'smooth' });
     };
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const feeData = {
+            totalFee: totalFees,
+            registrationFee: registrationFee,
+            scholarship: discount,
+            installments: installments.map(inst => ({
+                amount: parseFloat(inst.amount),
+                dueDate: inst.dueDate,
+            })),
+        };
+
+        if (student && student._id) {
+            axios.post(`${APP}/api/fees/${student._id}`, feeData)
+                .then(response => {
+                    console.log('Fee details saved:', response.data);
+                    alert('Fee details saved successfully.');
+                })
+                .catch(error => {
+                    console.error('Error saving fee details:', error);
+                    alert('Failed to save fee details.');
+                });
+        }
+    };
+
+    if (!student) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div style={styles.mainBody}>
             <div style={styles.container}>
-                <form onSubmit={e => e.preventDefault()}>
+                <form onSubmit={handleSubmit}>
                     <h1 style={{ textAlign: 'center', color: '#333', marginBottom: '40px', marginTop: '5px' }}>
                         Fee Management Calculator
                     </h1>
@@ -208,12 +265,11 @@ const FeeManagementCalculator = () => {
 
                     <div style={styles.formSection}>
                         <div style={styles.formGroup}>
-                            <label htmlFor="batchStartDate" style={styles.label}>Batch Start Date:</label>
+                            <label style={styles.label}>Start Date:</label>
                             <input
-                                type="date"
+                                // type="date"
                                 id="batchStartDate"
-                                value={batchStartDate}
-                                onChange={e => setBatchStartDate(e.target.value)}
+                                value={formatDate(startDate)}
                                 style={styles.input}
                             />
                         </div>
@@ -293,10 +349,13 @@ const FeeManagementCalculator = () => {
                     <button type="button" onClick={handleCalculate} style={styles.button}>
                         Calculate
                     </button>
+                    <button type="submit" style={styles.button}>
+                        Save Fee Details
+                    </button>
                 </form>
             </div>
         </div>
     );
 };
 
-export default FeeManagementCalculator;
+export default StudentFee;
