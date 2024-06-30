@@ -38,6 +38,7 @@ const handleSubmit = async (e) => {
             // Edit student
             await axios.put(`${APP}/api/student/${studentToEdit._id}`, student);
             console.log('Student updated successfully!');
+            window.location.reload();
             // Additional logic
         } else {
             // Add new student

@@ -31,13 +31,14 @@ const StudentFee = () => {
         }
     }, [student, startDate]);  
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        const day = date.getDate();
-        const month = date.getMonth() + 1; // Month is zero-based
-        const year = date.getFullYear();
-        return `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
-    };
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Month is zero-based
+    const year = date.getFullYear();
+    return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+};
+
 
  const styles = {
         mainBody: {
@@ -132,62 +133,63 @@ const StudentFee = () => {
         },
     };
 
-    const handleCalculate = () => {
-        const amountAfterRegistration = totalFees - registrationFee;
-        const discountAmount = (amountAfterRegistration * discount) / 100;
-        const final = amountAfterRegistration - discountAmount;
-        setFinalAmount(final.toFixed(2));
+const handleCalculate = () => {
+    const amountAfterRegistration = totalFees - registrationFee;
+    const discountAmount = (amountAfterRegistration * discount) / 100;
+    const final = amountAfterRegistration - discountAmount;
+    setFinalAmount(final.toFixed(2));
 
-        const dueDate = new Date(startDate); // Use startDate directly
-        const newInstallments = [];
+    const dueDate = new Date(startDate); // Use startDate directly
+    const newInstallments = [];
 
-        if (installmentType === 'default') {
-            const amounts = [
-                (final * 0.4).toFixed(2),
-                (final * 0.3).toFixed(2),
-                (final * 0.3).toFixed(2),
-            ];
-            const dates = [3, 6, 9].map(months => {
-                const date = new Date(dueDate);
-                date.setMonth(date.getMonth() + months);
-                return date.toISOString().split('T')[0];
+    if (installmentType === 'default') {
+        const amounts = [
+            (final * 0.4).toFixed(2),
+            (final * 0.3).toFixed(2),
+            (final * 0.3).toFixed(2),
+        ];
+        const dates = [3, 6, 9].map(months => {
+            const date = new Date(dueDate);
+            date.setMonth(date.getMonth() + months);
+            return formatDate(date); // Format date here
+        });
+
+        amounts.forEach((amount, index) => {
+            newInstallments.push({
+                amount,
+                dueDate: dates[index],
             });
+        });
+    } else {
+        let totalPercent = 0;
 
-            amounts.forEach((amount, index) => {
-                newInstallments.push({
-                    amount,
-                    dueDate: dates[index],
-                });
-            });
-        } else {
-            let totalPercent = 0;
+        for (let i = 0; i < numInstallments; i++) {
+            const percent = parseFloat(document.getElementById(`percent${i}`).value);
+            const months = parseInt(document.getElementById(`months${i}`).value);
+            totalPercent += percent;
 
-            for (let i = 0; i < numInstallments; i++) {
-                const percent = parseFloat(document.getElementById(`percent${i}`).value);
-                const months = parseInt(document.getElementById(`months${i}`).value);
-                totalPercent += percent;
-
-                if (isNaN(percent) || isNaN(months)) {
-                    alert('Please fill out all fields for installments.');
-                    return;
-                }
-
-                dueDate.setMonth(dueDate.getMonth() + months);
-                newInstallments.push({
-                    amount: ((final * percent) / 100).toFixed(2),
-                    dueDate: dueDate.toISOString().split('T')[0],
-                });
-            }
-
-            if (totalPercent !== 100) {
-                alert('Total percentage must equal 100.');
+            if (isNaN(percent) || isNaN(months)) {
+                alert('Please fill out all fields for installments.');
                 return;
             }
+
+            dueDate.setMonth(dueDate.getMonth() + months);
+            newInstallments.push({
+                amount: ((final * percent) / 100).toFixed(2),
+                dueDate: formatDate(dueDate), // Format date here
+            });
         }
 
-        setInstallments(newInstallments);
-        document.getElementById('installments').scrollIntoView({ behavior: 'smooth' });
-    };
+        if (totalPercent !== 100) {
+            alert('Total percentage must equal 100.');
+            return;
+        }
+    }
+
+    setInstallments(newInstallments);
+    document.getElementById('installments').scrollIntoView({ behavior: 'smooth' });
+};
+
 
     const handleSubmit = (e) => {
         e.preventDefault();

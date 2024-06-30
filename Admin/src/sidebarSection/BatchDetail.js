@@ -128,6 +128,7 @@ const handleAddStudent = async (newStudent) => {
         try {
             await axios.delete(`${APP}/api/student/enrollmentNo/${enrollmentNo}`);
             setStudents(prevStudents => prevStudents.filter(student => student.enrollmentNo !== enrollmentNo));
+            window.location.reload();
         } catch (error) {
             console.error('Error deleting student:', error);
             alert('An error occurred while deleting the student. Please try again.');
@@ -148,11 +149,11 @@ const handleAddStudent = async (newStudent) => {
     };
 
     const handleFeeManagementClick = () => {
-        navigate(`/fee-management/${batchId}`);
+        navigate(`/fee-management/batch/${batchId}`);
     };
 
     const handlePaymentClick = (student) => {
-        navigate(`/fee-management/${student._id}`);
+        navigate(`/fee-management/student/${student._id}`);
     };
 
     return (
