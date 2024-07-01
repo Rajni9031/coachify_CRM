@@ -7,7 +7,7 @@ const feeSchema = new mongoose.Schema({
   scholarship: { type: Number, default: 0 },
   installments: [{
     amount: { type: Number, required: true },
-    dueDate: { type: Date, required: true },
+    dueDate: { type: String, required: true },
     paid: { type: Boolean, default: false }
   }]
 });
