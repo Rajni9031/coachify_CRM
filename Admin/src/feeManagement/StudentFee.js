@@ -39,6 +39,90 @@ const StudentFee = () => {
         return `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
     };
 
+    const handleCalculate = () => {
+        const amountAfterRegistration = totalFees - registrationFee;
+        const discountAmount = (amountAfterRegistration * discount) / 100;
+        const final = amountAfterRegistration - discountAmount;
+        setFinalAmount(final.toFixed(2));
+
+        const dueDate = new Date(startDate);
+        const newInstallments = [];
+
+        if (installmentType === 'default') {
+            const amounts = [
+                (final * 0.4).toFixed(2),
+                (final * 0.3).toFixed(2),
+                (final * 0.3).toFixed(2),
+            ];
+            const days = [45, 45, 45];
+            days.forEach((dayCount, index) => {
+                dueDate.setDate(dueDate.getDate() + dayCount);
+                newInstallments.push({
+                    amount: amounts[index],
+                    dueDate: formatDate(dueDate),
+                });
+            });
+        } else {
+            let totalPercent = 0;
+
+            for (let i = 0; i < numInstallments; i++) {
+                const percent = parseFloat(document.getElementById(`percent${i}`).value);
+                const days = parseInt(document.getElementById(`days${i}`).value);
+                totalPercent += percent;
+
+                if (isNaN(percent) || isNaN(days)) {
+                    alert('Please fill out all fields for installments.');
+                    return;
+                }
+
+                dueDate.setDate(dueDate.getDate() + days);
+                newInstallments.push({
+                    amount: ((final * percent) / 100).toFixed(2),
+                    dueDate: formatDate(dueDate),
+                });
+            }
+
+            if (totalPercent !== 100) {
+                alert('Total percentage must equal 100.');
+                return;
+            }
+        }
+
+        setInstallments(newInstallments);
+        document.getElementById('installments').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const feeData = {
+            totalFee: totalFees,
+            registrationFee: registrationFee,
+            scholarship: discount,
+            installments: installments.map(inst => ({
+                amount: parseFloat(inst.amount),
+                dueDate: inst.dueDate,
+            })),
+        };
+
+        if (student && student._id) {
+            axios.post(`${APP}/api/fees/${student._id}`, feeData)
+                .then(response => {
+                    console.log('Fee details saved:', response.data);
+                    alert('Fee details saved successfully.');
+                })
+                .catch(error => {
+                    console.error('Error saving fee details:', error);
+                    alert('Failed to save fee details.');
+                });
+        }
+    };
+
+    if (!student) {
+        return <div>Loading...</div>;
+    }
+
+    
     const styles = {
         mainBody: {
             fontFamily: 'Segoe UI',
@@ -131,90 +215,6 @@ const StudentFee = () => {
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
         },
     };
-
-    const handleCalculate = () => {
-        const amountAfterRegistration = totalFees - registrationFee;
-        const discountAmount = (amountAfterRegistration * discount) / 100;
-        const final = amountAfterRegistration - discountAmount;
-        setFinalAmount(final.toFixed(2));
-    
-        const dueDate = new Date(startDate);
-        const newInstallments = [];
-    
-        if (installmentType === 'default') {
-            const amounts = [
-                (final * 0.4).toFixed(2),
-                (final * 0.3).toFixed(2),
-                (final * 0.3).toFixed(2),
-            ];
-            const days = [45, 45, 45];
-            days.forEach((dayCount, index) => {
-                dueDate.setDate(dueDate.getDate() + dayCount);
-                newInstallments.push({
-                    amount: amounts[index],
-                    dueDate: formatDate(dueDate),
-                });
-            });
-        } else {
-            let totalPercent = 0;
-    
-            for (let i = 0; i < numInstallments; i++) {
-                const percent = parseFloat(document.getElementById(`percent${i}`).value);
-                const days = parseInt(document.getElementById(`days${i}`).value);
-                totalPercent += percent;
-    
-                if (isNaN(percent) || isNaN(days)) {
-                    alert('Please fill out all fields for installments.');
-                    return;
-                }
-    
-                dueDate.setDate(dueDate.getDate() + days);
-                newInstallments.push({
-                    amount: ((final * percent) / 100).toFixed(2),
-                    dueDate: formatDate(dueDate),
-                });
-            }
-    
-            if (totalPercent !== 100) {
-                alert('Total percentage must equal 100.');
-                return;
-            }
-        }
-    
-        setInstallments(newInstallments);
-        document.getElementById('installments').scrollIntoView({ behavior: 'smooth' });
-    };
-    
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const feeData = {
-            totalFee: totalFees,
-            registrationFee: registrationFee,
-            scholarship: discount,
-            installments: installments.map(inst => ({
-                amount: parseFloat(inst.amount),
-                dueDate: inst.dueDate,
-            })),
-        };
-
-        if (student && student._id) {
-            axios.post(`${APP}/api/fees/${student._id}`, feeData)
-                .then(response => {
-                    console.log('Fee details saved:', response.data);
-                    alert('Fee details saved successfully.');
-                })
-                .catch(error => {
-                    console.error('Error saving fee details:', error);
-                    alert('Failed to save fee details.');
-                });
-        }
-    };
-
-    if (!student) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <div style={styles.mainBody}>

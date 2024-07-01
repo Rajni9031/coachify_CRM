@@ -49,6 +49,16 @@ const AllStudentFee = ({ batchId }) => {
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return ''; // Handle empty or undefined dateString
+
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Month is zero-based
+    const year = date.getFullYear();
+    return `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+  };
+
   const containerStyle = {
     background: '#f4f4f9',
     minHeight: '100vh',
@@ -175,7 +185,7 @@ const AllStudentFee = ({ batchId }) => {
                   data-label="Installments"
                 >
                   <ul style={{ padding: '0', margin: '0', listStyleType: 'none' }}>
-                    {student.installments.map((installment, idx) => (
+                    {student.installments.map(installment => (
                       <li
                         key={installment._id}
                         style={{
@@ -183,7 +193,7 @@ const AllStudentFee = ({ batchId }) => {
                           backgroundColor: installment.paid ? '#4CAF50' : 'transparent',
                         }}
                       >
-                        Amount: {installment.amount}, Due: {new Date(installment.dueDate).toLocaleDateString()}
+                        Amount: {installment.amount}, Due: {installment.dueDate}
                         <input
                           type="checkbox"
                           checked={installment.paid}

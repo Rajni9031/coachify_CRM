@@ -32,15 +32,43 @@ const FeeDetails = () => {
     };
   }, []);
 
-  const handleSortByDueDate = () => {
-    const sortedDetails = [...feeDetails].sort((a, b) => {
-      const aDueDate = a.installments.length > 0 ? new Date(a.installments[0].dueDate) : new Date();
-      const bDueDate = b.installments.length > 0 ? new Date(b.installments[0].dueDate) : new Date();
-      return sortAsc ? aDueDate - bDueDate : bDueDate - aDueDate;
-    });
-    setFeeDetails(sortedDetails);
-    setSortAsc(!sortAsc);
-  };
+const handleSortByDueDate = () => {
+  const sortedDetails = [...feeDetails].sort((a, b) => {
+    // Calculate total unpaid installment dues for each student
+    const totalDueA = a.installments.reduce((total, installment) => {
+      if (!installment.paid) {
+        return total + installment.amount;
+      }
+      return total;
+    }, 0);
+
+    const totalDueB = b.installments.reduce((total, installment) => {
+      if (!installment.paid) {
+        return total + installment.amount;
+      }
+      return total;
+    }, 0);
+
+    // Sort in descending order based on total due amount
+    return sortAsc ? totalDueB - totalDueA : totalDueA - totalDueB;
+  });
+
+  setFeeDetails(sortedDetails);
+  setSortAsc(!sortAsc);
+};
+
+    
+    const formatDate = (dateString) => {
+  if (!dateString) return ''; // Handle empty or undefined dateString
+
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // Month is zero-based
+  const year = date.getFullYear();
+  return `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+};
+
+    
 
   const containerStyle = {
     background: '#f4f4f9',
@@ -144,7 +172,7 @@ const FeeDetails = () => {
                     <ul style={{ padding: '0', margin: '0', listStyleType: 'none' }}>
                       {fee.installments.map((installment, idx) => (
                         <li key={idx} style={{ marginBottom: '5px', backgroundColor: installment.paid ? '#4CAF50' : 'transparent' }}>
-                          Amount: {installment.amount}, Due: {new Date(installment.dueDate).toLocaleDateString()}
+                          Amount: {installment.amount}, Due: {installment.dueDate}
                           <input type="checkbox" checked={installment.paid} readOnly style={checkboxStyle} />
                           <strong style={{ marginLeft: '5px' }}></strong>
                         </li>
