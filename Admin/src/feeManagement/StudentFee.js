@@ -29,18 +29,17 @@ const StudentFee = () => {
                     console.error('Error fetching fee details:', error);
                 });
         }
-    }, [student, startDate]);  
+    }, [student, startDate]);
 
-const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // Month is zero-based
-    const year = date.getFullYear();
-    return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
-};
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = date.getDate();
+        const month = date.getMonth() + 1; // Month is zero-based
+        const year = date.getFullYear();
+        return `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+    };
 
-
- const styles = {
+    const styles = {
         mainBody: {
             fontFamily: 'Segoe UI',
             backgroundColor: '#f4f4f4',
@@ -133,63 +132,59 @@ const formatDate = (dateString) => {
         },
     };
 
-const handleCalculate = () => {
-    const amountAfterRegistration = totalFees - registrationFee;
-    const discountAmount = (amountAfterRegistration * discount) / 100;
-    const final = amountAfterRegistration - discountAmount;
-    setFinalAmount(final.toFixed(2));
-
-    const dueDate = new Date(startDate); // Use startDate directly
-    const newInstallments = [];
-
-    if (installmentType === 'default') {
-        const amounts = [
-            (final * 0.4).toFixed(2),
-            (final * 0.3).toFixed(2),
-            (final * 0.3).toFixed(2),
-        ];
-        const dates = [3, 6, 9].map(months => {
-            const date = new Date(dueDate);
-            date.setMonth(date.getMonth() + months);
-            return formatDate(date); // Format date here
-        });
-
-        amounts.forEach((amount, index) => {
-            newInstallments.push({
-                amount,
-                dueDate: dates[index],
+    const handleCalculate = () => {
+        const amountAfterRegistration = totalFees - registrationFee;
+        const discountAmount = (amountAfterRegistration * discount) / 100;
+        const final = amountAfterRegistration - discountAmount;
+        setFinalAmount(final.toFixed(2));
+    
+        const dueDate = new Date(startDate);
+        const newInstallments = [];
+    
+        if (installmentType === 'default') {
+            const amounts = [
+                (final * 0.4).toFixed(2),
+                (final * 0.3).toFixed(2),
+                (final * 0.3).toFixed(2),
+            ];
+            const days = [45, 45, 45];
+            days.forEach((dayCount, index) => {
+                dueDate.setDate(dueDate.getDate() + dayCount);
+                newInstallments.push({
+                    amount: amounts[index],
+                    dueDate: formatDate(dueDate),
+                });
             });
-        });
-    } else {
-        let totalPercent = 0;
-
-        for (let i = 0; i < numInstallments; i++) {
-            const percent = parseFloat(document.getElementById(`percent${i}`).value);
-            const months = parseInt(document.getElementById(`months${i}`).value);
-            totalPercent += percent;
-
-            if (isNaN(percent) || isNaN(months)) {
-                alert('Please fill out all fields for installments.');
+        } else {
+            let totalPercent = 0;
+    
+            for (let i = 0; i < numInstallments; i++) {
+                const percent = parseFloat(document.getElementById(`percent${i}`).value);
+                const days = parseInt(document.getElementById(`days${i}`).value);
+                totalPercent += percent;
+    
+                if (isNaN(percent) || isNaN(days)) {
+                    alert('Please fill out all fields for installments.');
+                    return;
+                }
+    
+                dueDate.setDate(dueDate.getDate() + days);
+                newInstallments.push({
+                    amount: ((final * percent) / 100).toFixed(2),
+                    dueDate: formatDate(dueDate),
+                });
+            }
+    
+            if (totalPercent !== 100) {
+                alert('Total percentage must equal 100.');
                 return;
             }
-
-            dueDate.setMonth(dueDate.getMonth() + months);
-            newInstallments.push({
-                amount: ((final * percent) / 100).toFixed(2),
-                dueDate: formatDate(dueDate), // Format date here
-            });
         }
-
-        if (totalPercent !== 100) {
-            alert('Total percentage must equal 100.');
-            return;
-        }
-    }
-
-    setInstallments(newInstallments);
-    document.getElementById('installments').scrollIntoView({ behavior: 'smooth' });
-};
-
+    
+        setInstallments(newInstallments);
+        document.getElementById('installments').scrollIntoView({ behavior: 'smooth' });
+    };
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -269,10 +264,10 @@ const handleCalculate = () => {
                         <div style={styles.formGroup}>
                             <label style={styles.label}>Start Date:</label>
                             <input
-                                // type="date"
                                 id="batchStartDate"
                                 value={formatDate(startDate)}
                                 style={styles.input}
+                                readOnly
                             />
                         </div>
                         <div style={styles.formGroup}>
@@ -325,9 +320,9 @@ const handleCalculate = () => {
                                         />
                                         <input
                                             type="number"
-                                            placeholder="Months after previous"
+                                            placeholder="Days after previous"
                                             min="0"
-                                            id={`months${i}`}
+                                            id={`days${i}`}
                                             style={styles.installmentRowInput}
                                             required
                                         />

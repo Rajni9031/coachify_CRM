@@ -7,7 +7,7 @@ import { DateContext } from './DateContext';
 
 const APP = process.env.REACT_APP_API_URL;
 
-function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
+function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses, isAdmin }) {
   const [isVisible, setIsVisible] = useState(showbar);
   const [showMenu, setShowMenu] = useState(false);
   const { batchId } = useParams();
@@ -257,7 +257,7 @@ function SideScroll({ showbar, joiningDate, batchStartDate, showDemoClasses }) {
         </div>
       )}
 
-      <NotesParent notes={filteredNotes} />
+      <NotesParent notes={filteredNotes} isAdmin={isAdmin} />
 
       {modalType === 'add' && (
         <div ref={modalRef} style={{

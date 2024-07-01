@@ -8,7 +8,7 @@ const feeSchema = new mongoose.Schema({
   installments: [{
     amount: { type: Number, required: true },
     dueDate: { type: Date, required: true },
-    // paid: { type: Boolean, default: false }
+    paid: { type: Boolean, default: false }
   }]
 });
 

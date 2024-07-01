@@ -144,6 +144,16 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.get('/alldata', async (req, res) => {
+  try {
+    const students = await Student.find({}, '-password'); // Exclude password field
+    res.status(200).json(students);
+  } catch (err) {
+    console.error('Error fetching all student data:', err);
+    res.status(500).json({ error: 'Failed to fetch all student data' });
+  }
+});
+
 
 router.get('/:id/students', async (req, res) => {
   try {

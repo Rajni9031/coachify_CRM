@@ -21,6 +21,12 @@ const initialNavItems = [
     id: 'components-nav',
     children: [],
   },
+    {
+    type: 'item',
+    icon: 'bi bi-cash-stack',
+    label: 'Fee-Management',
+    href: '/feeDetails',
+  },
 ];
 
 function Sidebar() {
