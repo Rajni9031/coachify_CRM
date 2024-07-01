@@ -7,12 +7,18 @@ const convertToISTDate = (dateString) => {
     return date.toLocaleDateString('en-IN', options);
 };
 
-const CardComponent = ({ noteTitle, noteDate, noteContent, noteClass, demoClass }) => {
+const CardComponent = ({ noteTitle, noteDate, noteContent, noteClass, demoClass, isAdmin }) => {
     // Convert noteClass to IST date
     const dateOnly = noteClass ? convertToISTDate(noteClass) : '';
 
-    // Set background color based on demoClass property
-    const cardBackgroundColor = demoClass ? '#d4edda' : 'rgb(228, 226, 226)'; // Green background for demo classes
+    // Determine background color based on isAdmin and demoClass
+    let cardBackgroundColor = 'rgb(228, 226, 226)'; // Default background color for students
+
+    if (isAdmin) {
+        cardBackgroundColor = demoClass ? '#d4edda' : 'rgb(228, 226, 226)'; // Green background for admin and demo classes
+    } else {
+        cardBackgroundColor = demoClass ? 'rgb(228, 226, 226)' : 'rgb(228, 226, 226)'; // Default background for non-demo classes
+    }
 
     return (
         <div style={{ flexBasis: '80%', maxWidth: '80%', padding: '0 15px', marginBottom: '30px' }}>

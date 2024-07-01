@@ -253,7 +253,7 @@ const handleAddStudent = async (newStudent) => {
                             <button style={{ all: 'unset', cursor: 'pointer' }}>Batch Start Date</button>
                         </th>
                         <th style={{ backgroundColor: '#f2f2f2', padding: '10px', textAlign: 'left', borderBottom: '2px solid #ddd', cursor: 'pointer' }} onClick={() => handleSort('startDate')}>
-                            <button style={{ all: 'unset', cursor: 'pointer' }}>Start Date</button>
+                            <button style={{ all: 'unset', cursor: 'pointer' }}>Joining Date</button>
                         </th>
                         <th style={{ backgroundColor: '#f2f2f2', padding: '10px', textAlign: 'left', borderBottom: '2px solid #ddd', cursor: 'pointer' }} onClick={() => handleSort('endDate')}>
                             <button style={{ all: 'unset', cursor: 'pointer' }}>End Date</button>

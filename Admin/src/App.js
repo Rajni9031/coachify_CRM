@@ -9,10 +9,12 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import StudentLogin from './Student/StudentLogin';
 import StudentFee from './feeManagement/StudentFee';
+import FeeDetails from './feeManagement/FeeDetails';
 import AllStudentFee from './feeManagement/AllStudentFee';
 import ScheduleHome from './Scheduler/SchedulerHome';
 import { DateProvider } from './SchedulerComponents/DateContext';
 import { StudentProvider } from './ContextApi/StudentContext';
+import { AllStudentDataProvider } from './ContextApi/AllStudentData';
 import { UserProvider } from './ContextApi/UserContext';
 import Scheduler from './StudentComponents/Scheduler';
 import { BatchProvider } from './ContextApi/BatchContext';
@@ -33,6 +35,7 @@ const AllStudentFeeWrapper = () => {
 
 const App = () => {
     return (
+        <AllStudentDataProvider>
         <UserProvider>
             <BatchProvider>
                 <DateProvider>
@@ -40,6 +43,7 @@ const App = () => {
                         <Route path="/" element={<StudentLogin />} />
                         <Route path="/fee-management/student/:studentId" element={<StudentFeeWrapper />} />
                         <Route path="/fee-management/batch/:batchId" element={<AllStudentFeeWrapper />} />
+                        <Route path="/feeDetails" element={<FeeDetails />} />
                         <Route path="/:username/:batchId" element={<Scheduler />} />
                         <Route path="/admin" element={<Login />} />
                         <Route path="/admin/:username" element={<Home />} />
@@ -48,7 +52,8 @@ const App = () => {
                     </Routes>
                 </DateProvider>
             </BatchProvider>
-        </UserProvider>
+            </UserProvider>
+            </AllStudentDataProvider>
     );
 };
 

@@ -83,7 +83,7 @@ const handleSubmit = async (e) => {
                         <input type="date" name="batchstartDate" value={student.batchstartDate} onChange={handleChange} style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }} />
                     </div>
                     <div style={{ marginBottom: '10px' }}>
-                        <label>Start Date:</label>
+                        <label>Joining Date:</label>
                         <input type="date" name="startDate" value={student.startDate} onChange={handleChange} style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }} />
                     </div>
                     <div style={{ marginBottom: '10px' }}>

@@ -24,6 +24,31 @@ const AllStudentFee = ({ batchId }) => {
     };
   }, []);
 
+  const handleCheckboxChange = async (feeId, installmentId, currentStatus) => {
+    try {
+      // Update backend with the changed installment payment status
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/fees/installment/${feeId}/${installmentId}`, {
+        paid: !currentStatus,
+      });
+
+      // Update the state after successfully updating the backend
+      setStudents(prevStudents =>
+        prevStudents.map(student => {
+          if (student._id === feeId) {
+            const updatedInstallments = student.installments.map(installment =>
+              installment._id === installmentId ? { ...installment, paid: !currentStatus } : installment
+            );
+            return { ...student, installments: updatedInstallments };
+          }
+          return student;
+        })
+      );
+    } catch (error) {
+      console.error('Error updating installment payment status:', error);
+      // Handle error state if necessary
+    }
+  };
+
   const containerStyle = {
     background: '#f4f4f9',
     minHeight: '100vh',
@@ -73,7 +98,7 @@ const AllStudentFee = ({ batchId }) => {
   };
 
   const highlightStyle = {
-    backgroundColor: '#dff0d8',
+    backgroundColor: '#4CAF50', // Dark green color
   };
 
   const tdResponsiveStyle = {
@@ -82,6 +107,10 @@ const AllStudentFee = ({ batchId }) => {
     textAlign: 'right',
     paddingLeft: '50%',
     position: 'relative',
+  };
+
+  const checkboxStyle = {
+    marginLeft: '10px',
   };
 
   return (
@@ -147,8 +176,21 @@ const AllStudentFee = ({ batchId }) => {
                 >
                   <ul style={{ padding: '0', margin: '0', listStyleType: 'none' }}>
                     {student.installments.map((installment, idx) => (
-                      <li key={idx} style={{ marginBottom: '5px' }}>
+                      <li
+                        key={installment._id}
+                        style={{
+                          marginBottom: '5px',
+                          backgroundColor: installment.paid ? '#4CAF50' : 'transparent',
+                        }}
+                      >
                         Amount: {installment.amount}, Due: {new Date(installment.dueDate).toLocaleDateString()}
+                        <input
+                          type="checkbox"
+                          checked={installment.paid}
+                          onChange={() => handleCheckboxChange(student._id, installment._id, installment.paid)}
+                          style={checkboxStyle}
+                        />
+                        <strong style={{ marginLeft: '5px' }}>Paid</strong>
                       </li>
                     ))}
                   </ul>
