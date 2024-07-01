@@ -32,15 +32,31 @@ const FeeDetails = () => {
     };
   }, []);
 
-  const handleSortByDueDate = () => {
-    const sortedDetails = [...feeDetails].sort((a, b) => {
-      const aDueDate = a.installments.length > 0 ? new Date(a.installments[0].dueDate) : new Date();
-      const bDueDate = b.installments.length > 0 ? new Date(b.installments[0].dueDate) : new Date();
-      return sortAsc ? aDueDate - bDueDate : bDueDate - aDueDate;
-    });
-    setFeeDetails(sortedDetails);
-    setSortAsc(!sortAsc);
-    };
+const handleSortByDueDate = () => {
+  const sortedDetails = [...feeDetails].sort((a, b) => {
+    // Calculate total unpaid installment dues for each student
+    const totalDueA = a.installments.reduce((total, installment) => {
+      if (!installment.paid) {
+        return total + installment.amount;
+      }
+      return total;
+    }, 0);
+
+    const totalDueB = b.installments.reduce((total, installment) => {
+      if (!installment.paid) {
+        return total + installment.amount;
+      }
+      return total;
+    }, 0);
+
+    // Sort in descending order based on total due amount
+    return sortAsc ? totalDueB - totalDueA : totalDueA - totalDueB;
+  });
+
+  setFeeDetails(sortedDetails);
+  setSortAsc(!sortAsc);
+};
+
     
     const formatDate = (dateString) => {
   if (!dateString) return ''; // Handle empty or undefined dateString
