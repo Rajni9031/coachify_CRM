@@ -8,7 +8,6 @@ const APP = process.env.REACT_APP_API_URL;
 
 function Nav({ panelType, studentName }) {
   const { user } = useUser(); // Extract user from the context API
-  // const studentName = user.name; // Assuming the user object has a 'name' field
   const panelTitle = panelType === 'student' ? 'Student Panel' : 'Admin Panel';
   const panelItems = panelType === 'student' 
     ? ['Home', 'Class Schedule', 'Profile'] // Example student-specific items
@@ -186,8 +185,8 @@ function Nav({ panelType, studentName }) {
 </ul>
           </div>
         )}
-        {panelType !== 'student' && (
-          <div style={{ ...adminPanelStyle, backgroundColor: '#4CAF50', color: '#fff' }}>{user.name}</div> // Render user name only in admin panel
+        {panelType !== 'student' && user && user.name && (
+          <div style={{ ...adminPanelStyle, color: '#fff' }}></div> // Render user name only in admin panel
         )}
       </div>
     </div>
